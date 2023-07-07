@@ -9,22 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteJob = exports.getJob = exports.updateJob = exports.createJob = void 0;
-const express_validator_1 = require("express-validator");
+exports.deleteJobs = exports.deleteJob = exports.getJobs = exports.getJob = exports.updateJob = exports.createJob = void 0;
 const jobModel_1 = require("../models/jobModel");
 const createJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // destructures values from req.body
         const { name, description, salary, hot, withLivingHouse, withoutLanguage } = req.body;
-        // extracts the validation errors of an express request
-        const validationErrors = (0, express_validator_1.validationResult)(req);
-        // returns response with status 400 if there were any errors during input validation
-        if (!validationErrors.isEmpty()) {
-            return res.status(400).json({
-                message: validationErrors,
-                status: "Validation error",
-            });
-        }
         // creates a new job in MongoDB
         const newJob = yield jobModel_1.Job.create({
             name,
@@ -54,13 +44,6 @@ exports.createJob = createJob;
 const updateJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { job_id } = req.params;
-        const validationErrors = (0, express_validator_1.validationResult)(req);
-        if (!validationErrors.isEmpty()) {
-            return res.status(400).json({
-                message: validationErrors,
-                status: "Validation error",
-            });
-        }
         const updatedJob = yield jobModel_1.Job.updateOne({ _id: job_id }, { $set: req.body });
         return res.status(200).json({
             message: "Job is updated",
@@ -81,12 +64,6 @@ exports.updateJob = updateJob;
 const getJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { job_id } = req.params;
-        const validationErrors = (0, express_validator_1.validationResult)(req);
-        if (!validationErrors.isEmpty()) {
-            return res
-                .status(400)
-                .json({ message: validationErrors, status: "Validation error" });
-        }
         const job = yield jobModel_1.Job.findById(job_id);
         if (!job) {
             return res
@@ -107,22 +84,39 @@ const getJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getJob = getJob;
+const getJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const jobs = yield jobModel_1.Job.find({});
+        return res.status(200).json({
+            message: "Jobs are got",
+            result: jobs,
+            status: "Success",
+        });
+    }
+    catch (err) {
+        const message = "Error occured durring getting jobs";
+        return res.status(500).json({
+            message,
+            status: "Server error",
+        });
+    }
+});
+exports.getJobs = getJobs;
 const deleteJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { job_id } = req.params;
-        const validationErrors = (0, express_validator_1.validationResult)(req);
-        if (!validationErrors.isEmpty()) {
-            return res.status(400).json({
-                message: validationErrors,
-                status: "Validation error",
-            });
-        }
-        const deletedJob = yield jobModel_1.Job.deleteOne({
+        const deletedCount = yield jobModel_1.Job.deleteOne({
             _id: job_id,
         });
+        if (deletedCount.deletedCount === 0) {
+            return res.status(404).json({
+                message: "Job does not exist",
+                status: "Not found error",
+            });
+        }
         return res.status(200).json({
             message: "Job is deleted",
-            result: deletedJob,
+            result: deletedCount,
             status: "Success",
         });
     }
@@ -136,3 +130,20 @@ const deleteJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deleteJob = deleteJob;
+const deleteJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield jobModel_1.Job.deleteMany({});
+        return res.status(200).json({
+            message: "Jobs are deleted",
+            status: "Success",
+        });
+    }
+    catch (err) {
+        const message = "Error occured during deleting jobs";
+        return res.status(500).json({
+            message,
+            status: "Server error",
+        });
+    }
+});
+exports.deleteJobs = deleteJobs;

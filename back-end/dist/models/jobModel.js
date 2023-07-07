@@ -12,5 +12,5 @@ const jobSchema = new mongoose_1.default.Schema({
     hot: Boolean,
     withLivingHouse: Boolean,
     withoutLanguage: Boolean,
-});
+}, { timestamps: true });
 exports.Job = mongoose_1.default.model("Job", jobSchema);

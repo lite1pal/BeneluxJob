@@ -24,7 +24,7 @@ afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));
 describe("Job actions", () => {
-    let createdId;
+    let createdJobId;
     it("should create a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app).post("/jobs/create").send({
             name: "porter",
@@ -35,20 +35,46 @@ describe("Job actions", () => {
             withoutLanguage: true,
         });
         expect(response.statusCode).toEqual(200);
-        createdId = response.body.result._id;
+        createdJobId = response.body.result._id;
     }));
     it("should update a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app)
-            .put(`/jobs/update/${createdId}`)
+            .put(`/jobs/update/${createdJobId}`)
             .send({ salary: 20, description: "easy work" });
         expect(response.statusCode).toEqual(200);
     }));
     it("should retrieve a job", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/${createdId}`);
+        const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/${createdJobId}`);
         expect(response.statusCode).toEqual(200);
     }));
     it("should delete a job", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app_1.app).delete(`/jobs/delete/${createdId}`);
+        const response = yield (0, supertest_1.default)(app_1.app).delete(`/jobs/delete/${createdJobId}`);
+        expect(response.statusCode).toEqual(200);
+    }));
+});
+describe("Application actions", () => {
+    let createdApplicationId;
+    it("should create an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app).post("/applications/create").send({
+            first_name: "Andrzej",
+            last_name: "Sapkowski",
+            age: 75,
+            email: "andrzej_sapkowski@ukr.net",
+            phone_number: "0931230565",
+        });
+        expect(response.statusCode).toEqual(200);
+        createdApplicationId = response.body.result._id;
+    }));
+    it("should update an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app).put(`/applications/update/${createdApplicationId}`);
+        expect(response.statusCode).toEqual(200);
+    }));
+    it("should get an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app).get(`/applications/${createdApplicationId}`);
+        expect(response.statusCode).toEqual(200);
+    }));
+    it("should delete an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app).delete(`/applications/delete/${createdApplicationId}`);
         expect(response.statusCode).toEqual(200);
     }));
 });

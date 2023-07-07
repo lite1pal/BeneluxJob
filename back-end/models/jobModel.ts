@@ -9,13 +9,16 @@ interface IJob {
   withoutLanguage: boolean;
 }
 
-const jobSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  salary: Number,
-  hot: Boolean,
-  withLivingHouse: Boolean,
-  withoutLanguage: Boolean,
-});
+const jobSchema = new mongoose.Schema(
+  {
+    name: String,
+    description: String,
+    salary: Number,
+    hot: Boolean,
+    withLivingHouse: Boolean,
+    withoutLanguage: Boolean,
+  },
+  { timestamps: true }
+);
 
 export const Job = mongoose.model<IJob>("Job", jobSchema);

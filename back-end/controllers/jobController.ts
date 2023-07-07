@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
 import { Job } from "../models/jobModel";
-import mongoose, { ObjectId } from "mongoose";
 
 export const createJob = async (
   req: Request,
@@ -11,17 +9,6 @@ export const createJob = async (
     // destructures values from req.body
     const { name, description, salary, hot, withLivingHouse, withoutLanguage } =
       req.body;
-
-    // extracts the validation errors of an express request
-    const validationErrors = validationResult(req);
-
-    // returns response with status 400 if there were any errors during input validation
-    if (!validationErrors.isEmpty()) {
-      return res.status(400).json({
-        message: validationErrors,
-        status: "Validation error",
-      });
-    }
 
     // creates a new job in MongoDB
     const newJob = await Job.create({
@@ -56,14 +43,6 @@ export const updateJob = async (
   try {
     const { job_id } = req.params;
 
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-      return res.status(400).json({
-        message: validationErrors,
-        status: "Validation error",
-      });
-    }
-
     const updatedJob = await Job.updateOne({ _id: job_id }, { $set: req.body });
     return res.status(200).json({
       message: "Job is updated",
@@ -87,12 +66,6 @@ export const getJob = async (
   try {
     const { job_id } = req.params;
 
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: validationErrors, status: "Validation error" });
-    }
     const job = await Job.findById(job_id);
     if (!job) {
       return res
@@ -112,6 +85,26 @@ export const getJob = async (
   }
 };
 
+export const getJobs = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const jobs = await Job.find({});
+    return res.status(200).json({
+      message: "Jobs are got",
+      result: jobs,
+      status: "Success",
+    });
+  } catch (err) {
+    const message = "Error occured durring getting jobs";
+    return res.status(500).json({
+      message,
+      status: "Server error",
+    });
+  }
+};
+
 export const deleteJob = async (
   req: Request,
   res: Response
@@ -119,26 +112,44 @@ export const deleteJob = async (
   try {
     const { job_id } = req.params;
 
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-      return res.status(400).json({
-        message: validationErrors,
-        status: "Validation error",
-      });
-    }
-
-    const deletedJob = await Job.deleteOne({
+    const deletedCount = await Job.deleteOne({
       _id: job_id,
     });
 
+    if (deletedCount.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Job does not exist",
+        status: "Not found error",
+      });
+    }
+
     return res.status(200).json({
       message: "Job is deleted",
-      result: deletedJob,
+      result: deletedCount,
       status: "Success",
     });
   } catch (err) {
     const message = "Error occured during deleting a job";
     console.error(message, err);
+    return res.status(500).json({
+      message,
+      status: "Server error",
+    });
+  }
+};
+
+export const deleteJobs = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    await Job.deleteMany({});
+    return res.status(200).json({
+      message: "Jobs are deleted",
+      status: "Success",
+    });
+  } catch (err) {
+    const message = "Error occured during deleting jobs";
     return res.status(500).json({
       message,
       status: "Server error",
