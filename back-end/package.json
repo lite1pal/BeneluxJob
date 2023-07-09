@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"jest --verbose\" \"nodemon -q dist/server.js\"",
     "test": "jest --verbose",
+    "start": "node dist/server.js",
     "kill-port": "node kill-port.js"
   },
   "keywords": [],
