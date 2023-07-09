@@ -20,12 +20,7 @@ app.use(express.json());
 
 // listens to middleware functions
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: "https://benelux-job.onrender.com",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+app.use(cors());
 app.use(helmet());
 app.use(
   session({
