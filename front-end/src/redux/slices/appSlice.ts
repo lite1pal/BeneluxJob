@@ -4,7 +4,7 @@ const initialState = {
   isAuth: true,
   count: 0,
   jobs: [],
-  apiUrl: "http://localhost:4001",
+  apiUrl: "https://benelux-job-server.onrender.com",
   currentJob: {},
   screenWidth: window.innerWidth,
   scrollY: window.scrollY,
