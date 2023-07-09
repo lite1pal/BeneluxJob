@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL!],
+    origin: "https://benelux-job.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
