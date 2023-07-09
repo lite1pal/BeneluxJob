@@ -4,6 +4,8 @@ import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 import session from "express-session";
+import dotenv from "dotenv";
+dotenv.config();
 
 // imports routers
 import { jobRouter } from "./routes/jobRouter";
@@ -18,7 +20,12 @@ app.use(express.json());
 
 // listens to middleware functions
 app.use(morgan("dev"));
-app.use(cors());
+app.use(
+  cors({
+    origin: [process.env.CLIENT_URL!],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(helmet());
 app.use(
   session({

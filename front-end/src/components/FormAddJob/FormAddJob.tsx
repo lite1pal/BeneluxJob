@@ -65,7 +65,11 @@ const FormAddJob = (): React.JSX.Element => {
     }
   };
   return (
-    <div className={`w-full ${AfterCreatedJobVision ? "opacity-30" : null}`}>
+    <div
+      className={`w-full transition duration-500 ${
+        AfterCreatedJobVision ? "opacity-30 pointer-events-none" : "opacity-100"
+      }`}
+    >
       <form
         onSubmit={createJob}
         className="w-5/6 flex flex-col space-y-4 rounded-lg shadow-[0px_5px_7px_0px_#4a5568] mx-auto m-12 bg-white"

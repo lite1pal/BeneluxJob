@@ -86,7 +86,15 @@ const getJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getJob = getJob;
 const getJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const jobs = yield jobModel_1.Job.find({});
+        const pageNumber = parseInt(req.query.page);
+        const search = req.query.search;
+        let jobs;
+        search.length > 0
+            ? (jobs = yield jobModel_1.Job.find({ name: { $regex: search, $options: "i" } }))
+            : (jobs = yield jobModel_1.Job.find()
+                .skip(pageNumber * 15)
+                .limit(15));
+        console.log("Number of jobs: ", jobs.length);
         return res.status(200).json({
             message: "Jobs are got",
             result: jobs,

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsAuth, setScreenWidth } from "./redux/slices/appSlice";
 import CompanyInfoPage from "./components/CompanyInfoPage/CompanyInfoPage";
+import SignUp from "./components/SignUp/SignUp";
 
 export const App = () => {
   const isAuth = useSelector((state: any) => state.app.isAuth);
@@ -29,16 +30,14 @@ export const App = () => {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={isAuth ? <MainPage /> : <Navigate to="/signin" />}
-      />
+      <Route path="/" element={<MainPage />} />
       <Route path="/company_info" element={<CompanyInfoPage />} />
       <Route
         path="/add_job"
         element={isAuth ? <AddJobPage /> : <Navigate to="/signin" />}
       />
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
     </Routes>
   );
 };

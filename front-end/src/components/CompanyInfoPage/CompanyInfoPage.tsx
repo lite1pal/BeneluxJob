@@ -1,6 +1,4 @@
-import AfterCreatedJob from "../AfterCreatedJob/AfterCreatedJob";
 import Footer from "../Footer/Footer";
-import FormAddJob from "../FormAddJob/FormAddJob";
 import Navbar from "../Navbar/Navbar";
 
 const CompanyInfoPage = (): React.JSX.Element => {

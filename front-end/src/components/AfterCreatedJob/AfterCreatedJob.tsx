@@ -1,13 +1,20 @@
 import React from "react";
 import { setAfterCreatedJobVision } from "../../redux/slices/appSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const AfterCreatedJob = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const redirect = useNavigate();
+  const AfterCreatedJobVision = useSelector(
+    (state: any) => state.app.AfterCreatedJobVision
+  );
   return (
-    <div className="flex flex-col bg-white absolute w-4/6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-[0px_5px_10px_-3px_#4a5568]">
+    <div
+      className={`flex flex-col transition duration-500 ${
+        AfterCreatedJobVision ? "opacity-100" : "opacity-0 pointer-events-none"
+      } bg-white absolute w-4/6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-[0px_5px_10px_-3px_#4a5568]`}
+    >
       <div className="p-10 text-2xl mx-auto">Вакансія створена</div>
       <hr />
       <div className="flex flex-col p-10 space-y-6 sm:w-1/2 sm:mx-auto">

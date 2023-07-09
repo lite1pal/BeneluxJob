@@ -7,7 +7,14 @@ const initialState = {
   apiUrl: "http://localhost:4001",
   currentJob: {},
   screenWidth: window.innerWidth,
+  scrollY: window.scrollY,
   AfterCreatedJobVision: false,
+  isLoading: false,
+  isSearchingJobs: false,
+  foundJobs: [],
+  pageNumber: 0,
+  mainPageScrollVision: true,
+  FormApplyVision: false,
 };
 
 export const appSlice = createSlice({
@@ -29,8 +36,29 @@ export const appSlice = createSlice({
     setScreenWidth: (state, action) => {
       state.screenWidth = action.payload;
     },
+    setScrollY: (state, action) => {
+      state.scrollY = action.payload;
+    },
     setAfterCreatedJobVision: (state, action) => {
       state.AfterCreatedJobVision = action.payload;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    setIsSearchingJobs: (state, action) => {
+      state.isSearchingJobs = action.payload;
+    },
+    setFoundJobs: (state, action) => {
+      state.foundJobs = action.payload;
+    },
+    setPageNumber: (state, action) => {
+      state.pageNumber = action.payload;
+    },
+    setMainPageScrollVision: (state, action) => {
+      state.mainPageScrollVision = action.payload;
+    },
+    setFormApplyVision: (state, action) => {
+      state.FormApplyVision = action.payload;
     },
   },
 });
@@ -42,6 +70,13 @@ export const {
   setCurrentJob,
   setScreenWidth,
   setAfterCreatedJobVision,
+  setIsLoading,
+  setIsSearchingJobs,
+  setFoundJobs,
+  setScrollY,
+  setPageNumber,
+  setMainPageScrollVision,
+  setFormApplyVision,
 } = appSlice.actions;
 
 export default appSlice.reducer;

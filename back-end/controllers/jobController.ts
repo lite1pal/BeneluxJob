@@ -90,7 +90,17 @@ export const getJobs = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const jobs = await Job.find({});
+    const pageNumber: number = parseInt(req.query.page as string);
+    const search = req.query.search as string;
+
+    let jobs;
+    search.length > 0
+      ? (jobs = await Job.find({ name: { $regex: search, $options: "i" } }))
+      : (jobs = await Job.find()
+          .skip(pageNumber * 15)
+          .limit(15));
+
+    console.log("Number of jobs: ", jobs.length);
     return res.status(200).json({
       message: "Jobs are got",
       result: jobs,
