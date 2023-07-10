@@ -44,6 +44,11 @@ export const updateJob = async (
     const { job_id } = req.params;
 
     const updatedJob = await Job.updateOne({ _id: job_id }, { $set: req.body });
+    if (updatedJob.matchedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Not found a job", status: "Not found error" });
+    }
     return res.status(200).json({
       message: "Job is updated",
       result: updatedJob,
@@ -97,8 +102,8 @@ export const getJobs = async (
     search.length > 0
       ? (jobs = await Job.find({ name: { $regex: search, $options: "i" } }))
       : (jobs = await Job.find()
-          .skip(pageNumber * 15)
-          .limit(15));
+          .skip(pageNumber * 10)
+          .limit(10));
 
     console.log("Number of jobs: ", jobs.length);
     return res.status(200).json({

@@ -22,10 +22,7 @@ exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
 // listens to middleware functions
 exports.app.use((0, morgan_1.default)("dev"));
-exports.app.use((0, cors_1.default)({
-    origin: [process.env.CLIENT_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-}));
+exports.app.use((0, cors_1.default)());
 exports.app.use((0, helmet_1.default)());
 exports.app.use((0, express_session_1.default)({
     secret: "secret",

@@ -45,6 +45,11 @@ const updateJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { job_id } = req.params;
         const updatedJob = yield jobModel_1.Job.updateOne({ _id: job_id }, { $set: req.body });
+        if (updatedJob.matchedCount === 0) {
+            return res
+                .status(404)
+                .json({ message: "Not found a job", status: "Not found error" });
+        }
         return res.status(200).json({
             message: "Job is updated",
             result: updatedJob,
@@ -92,8 +97,8 @@ const getJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         search.length > 0
             ? (jobs = yield jobModel_1.Job.find({ name: { $regex: search, $options: "i" } }))
             : (jobs = yield jobModel_1.Job.find()
-                .skip(pageNumber * 15)
-                .limit(15));
+                .skip(pageNumber * 10)
+                .limit(10));
         console.log("Number of jobs: ", jobs.length);
         return res.status(200).json({
             message: "Jobs are got",

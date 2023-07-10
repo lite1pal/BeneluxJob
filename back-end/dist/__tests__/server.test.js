@@ -42,6 +42,7 @@ describe("Job actions", () => {
             .put(`/jobs/update/${createdJobId}`)
             .send({ salary: 20, description: "easy work" });
         expect(response.statusCode).toEqual(200);
+        console.log(response.body);
     }));
     it("should retrieve a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/${createdJobId}`);
@@ -51,6 +52,32 @@ describe("Job actions", () => {
         const response = yield (0, supertest_1.default)(app_1.app).delete(`/jobs/delete/${createdJobId}`);
         expect(response.statusCode).toEqual(200);
     }));
+    describe("Create a job errors", () => {
+        it("should return status 404 if a job with such id is missing", () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/${createdJobId}`);
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toEqual("Not found a job");
+        }));
+        it("should return status 500 if a function with await went wrong", () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/1`);
+            expect(response.statusCode).toEqual(500);
+        }));
+    });
+    describe("Update a job errors", () => {
+        it("should return status 500 if a function with await went wrong", () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.app)
+                .put(`/jobs/update/1`)
+                .send({ salary: 20, description: "easy work" });
+            expect(response.statusCode).toEqual(500);
+        }));
+        it("should return status 404 if a job with such id is missing", () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.app)
+                .put(`/jobs/update/${createdJobId}`)
+                .send({ salary: 20, description: "easy work" });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toEqual("Not found a job");
+        }));
+    });
 });
 describe("Application actions", () => {
     let createdApplicationId;

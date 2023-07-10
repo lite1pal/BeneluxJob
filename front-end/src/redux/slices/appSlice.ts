@@ -1,10 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const status = "dev";
+
 const initialState = {
   isAuth: true,
   count: 0,
   jobs: [],
-  apiUrl: "https://benelux-job-server.onrender.com",
+  apiUrl:
+    status === "dev"
+      ? "http://localhost:4001"
+      : "https://benelux-job-server.onrender.com",
   currentJob: {},
   screenWidth: window.innerWidth,
   scrollY: window.scrollY,
@@ -15,6 +20,7 @@ const initialState = {
   pageNumber: 0,
   mainPageScrollVision: true,
   FormApplyVision: false,
+  scrollYbefore: 0,
 };
 
 export const appSlice = createSlice({
@@ -60,6 +66,9 @@ export const appSlice = createSlice({
     setFormApplyVision: (state, action) => {
       state.FormApplyVision = action.payload;
     },
+    setScrollYbefore: (state, action) => {
+      state.scrollYbefore = action.payload;
+    },
   },
 });
 
@@ -77,6 +86,7 @@ export const {
   setPageNumber,
   setMainPageScrollVision,
   setFormApplyVision,
+  setScrollYbefore,
 } = appSlice.actions;
 
 export default appSlice.reducer;

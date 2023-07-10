@@ -5,6 +5,7 @@ import {
   setFoundJobs,
   setJobs,
   setPageNumber,
+  setScrollYbefore,
 } from "../../redux/slices/appSlice";
 import { IJob } from "../Navbar/Navbar";
 import { AnyAction } from "@reduxjs/toolkit";
@@ -48,6 +49,8 @@ const Jobs = (): React.JSX.Element => {
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const scrollY = useSelector((state: any) => state.app.scrollY);
+  const screenWidth = useSelector((state: any) => state.app.screenWidth);
+  const scrollYbefore = useSelector((state: any) => state.app.scrollYbefore);
 
   useEffect(() => {
     return () => {
@@ -101,48 +104,54 @@ const Jobs = (): React.JSX.Element => {
       <ul>
         {renderJobs.map((job: IJob) => {
           return (
-            <>
-              <li
-                key={job._id}
-                className={`m-2 my-6 rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white transition duration-300 ${
-                  currentJob._id === job._id ? "transform rotate-2" : null
-                }`}
-              >
-                <div className="m-2 p-4">
-                  <div className="flex w-4/12 justify-between">
-                    <div className="font-medium text-xl transition items-center">
-                      {job.name}
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="font-extrabold">{job.salary}$ / год</div>
-                    <div className="my-2 text-sm">{job.description}</div>
-                  </div>
-
-                  <div className="w-full my-2 flex justify-between">
-                    <div className="italic opacity-70">
-                      {new Date(job.createdAt).toLocaleDateString()}
-                    </div>
-                    <button
-                      onClick={() => showJob(job)}
-                      className="flex items-center space-x-2 px-5 py-2 text-sm transition-all bg-green-300 hover:bg-green-400 rounded shadow"
-                    >
-                      <div>Дізнатись більше</div>
-                      <i className="fa-solid fa-arrow-right"></i>
-                    </button>
+            <li
+              key={job._id}
+              className={`m-2 my-6 rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white transition duration-300 ${
+                currentJob._id === job._id ? "transform rotate-2" : null
+              }`}
+            >
+              <div className="m-2 p-4">
+                <div className="flex w-4/12 justify-between">
+                  <div className="font-medium text-xl transition items-center">
+                    {job.name}
                   </div>
                 </div>
-              </li>
-            </>
+                <div className="flex flex-col">
+                  <div className="font-extrabold">{job.salary}$ / год</div>
+                  <div className="my-2 text-sm">{job.description}</div>
+                </div>
+
+                <div className="w-full my-2 flex justify-between">
+                  <div className="italic opacity-70">
+                    {new Date(job.createdAt).toLocaleDateString()}
+                  </div>
+                  <button
+                    onClick={() => {
+                      showJob(job);
+                      dispatch(setScrollYbefore(scrollY));
+                      console.log(scrollYbefore);
+                      screenWidth <= 650 ? window.scrollTo(0, 0) : null;
+                      scrollY < 150
+                        ? window.scrollTo({ top: 150, behavior: "smooth" })
+                        : null;
+                    }}
+                    className="flex items-center space-x-2 px-5 py-2 text-sm transition-all bg-green-300 hover:bg-green-400 rounded shadow"
+                  >
+                    <div>Дізнатись більше</div>
+                    <i className="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
           );
         })}
       </ul>
 
       <div
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed bottom-0 m-4 hover:bg-green-200 ${
+        className={`fixed left-1/2 bottom-12 sm:bottom-16 sm:left-2 p-4 sm:p-4 bg-green-400 ${
           scrollY > 150 ? "opacity-100" : "opacity-0 pointer-events-none"
-        } transition duration-700 left-0 rounded-3xl p-2`}
+        } transition duration-700 hover:bg-green-500 rounded-3xl`}
       >
         <i className="fa-solid fa-arrow-up fa-2xl"></i>
       </div>
@@ -153,7 +162,9 @@ const Jobs = (): React.JSX.Element => {
           setPageNumberChanges(true);
         }}
         className={`mx-auto my-4 ${
-          isSearchingJobs ? "opacity-0 pointer-events-none" : "opacity-100"
+          isSearchingJobs || jobs.length === 0
+            ? "opacity-0 pointer-events-none"
+            : "opacity-100"
         } border-2 hover:bg-green-200 border-gray-400 rounded w-fit p-4 font-light text-lg`}
       >
         Наступні вакансії

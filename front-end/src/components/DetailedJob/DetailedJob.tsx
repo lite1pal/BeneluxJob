@@ -4,6 +4,7 @@ import {
   setCurrentJob,
   setFormApplyVision,
   setMainPageScrollVision,
+  setScrollYbefore,
 } from "../../redux/slices/appSlice";
 
 const DetailedJob = ({
@@ -14,6 +15,8 @@ const DetailedJob = ({
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const dispatch = useDispatch();
   const scrollY = useSelector((state: any) => state.app.scrollY);
+  const scrollYbefore = useSelector((state: any) => state.app.scrollYbefore);
+  const screenWidth = useSelector((state: any) => state.app.screenWidth);
 
   useEffect(() => {
     if (divRefDetailedJob.current !== null) {
@@ -27,7 +30,7 @@ const DetailedJob = ({
         currentJob.name
           ? "max-sm:block sm:opacity-100"
           : "max-sm:hidden sm:opacity-0 sm:pointer-events-none"
-      } ${scrollY < 150 ? "sm:translate-y-4" : ""}`}
+      }`}
     >
       <div
         onMouseEnter={(e) => {
@@ -36,14 +39,19 @@ const DetailedJob = ({
         }}
         onMouseLeave={() => dispatch(setMainPageScrollVision(true))}
         ref={divRefDetailedJob}
-        className="p-8 mx-4 my-2 flex flex-col space-y-4 sm:fixed sm:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white"
+        className={`p-8 mx-1 border-2 border-black sm:mx-4 my-2 flex flex-col space-y-4 sm:fixed ${
+          scrollY < 150 ? "sm:relative sm:w-full" : ""
+        } sm:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
       >
         <div className="flex w-full justify-between">
           <div className="font-medium text-xl transition items-center">
             {currentJob.name}
           </div>
           <div
-            onClick={() => dispatch(setCurrentJob({}))}
+            onClick={() => {
+              dispatch(setCurrentJob({}));
+              screenWidth <= 640 ? window.scrollTo(0, scrollYbefore) : null;
+            }}
             className="hover:opacity-50"
           >
             <i className="fa-solid fa-xmark fa-2xl"></i>

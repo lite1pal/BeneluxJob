@@ -30,6 +30,7 @@ describe("Job actions", () => {
       .put(`/jobs/update/${createdJobId}`)
       .send({ salary: 20, description: "easy work" });
     expect(response.statusCode).toEqual(200);
+    console.log(response.body);
   });
   it("should retrieve a job", async () => {
     const response = await request(app).get(`/jobs/${createdJobId}`);
@@ -38,6 +39,32 @@ describe("Job actions", () => {
   it("should delete a job", async () => {
     const response = await request(app).delete(`/jobs/delete/${createdJobId}`);
     expect(response.statusCode).toEqual(200);
+  });
+  describe("Create a job errors", () => {
+    it("should return status 404 if a job with such id is missing", async () => {
+      const response = await request(app).get(`/jobs/${createdJobId}`);
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.message).toEqual("Not found a job");
+    });
+    it("should return status 500 if a function with await went wrong", async () => {
+      const response = await request(app).get(`/jobs/1`);
+      expect(response.statusCode).toEqual(500);
+    });
+  });
+  describe("Update a job errors", () => {
+    it("should return status 500 if a function with await went wrong", async () => {
+      const response = await request(app)
+        .put(`/jobs/update/1`)
+        .send({ salary: 20, description: "easy work" });
+      expect(response.statusCode).toEqual(500);
+    });
+    it("should return status 404 if a job with such id is missing", async () => {
+      const response = await request(app)
+        .put(`/jobs/update/${createdJobId}`)
+        .send({ salary: 20, description: "easy work" });
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.message).toEqual("Not found a job");
+    });
   });
 });
 
