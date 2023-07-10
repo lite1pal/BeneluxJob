@@ -76,7 +76,7 @@ const Jobs = (): React.JSX.Element => {
   };
 
   return (
-    <div className="w-full sm:w-1/2 overflow-scroll">
+    <div className="w-full sm:w-1/2">
       {/* <p className="text-neutral-500 m-3">
     Кількість вакансій - {jobs.length}
   </p> */}
