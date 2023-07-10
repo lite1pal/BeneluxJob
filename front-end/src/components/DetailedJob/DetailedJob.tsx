@@ -4,7 +4,6 @@ import {
   setCurrentJob,
   setFormApplyVision,
   setMainPageScrollVision,
-  setScrollYbefore,
 } from "../../redux/slices/appSlice";
 
 const DetailedJob = ({
