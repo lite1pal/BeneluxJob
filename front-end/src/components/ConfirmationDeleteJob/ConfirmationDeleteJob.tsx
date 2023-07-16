@@ -5,7 +5,6 @@ import {
   setJobs,
 } from "../../redux/slices/appSlice";
 import { bearerString } from "../FormAddJob/FormAddJob";
-import { getJobs } from "../Jobs/Jobs";
 import { IJob } from "../Navbar/Navbar";
 
 const ConfirmationDeleteJob = (): React.JSX.Element => {

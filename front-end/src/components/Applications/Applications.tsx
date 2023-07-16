@@ -21,7 +21,6 @@ export interface IApplication {
 const Applications = (): React.JSX.Element => {
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const applications = useSelector((state: any) => state.app.applications);
-  const jobs = useSelector((state: any) => state.app.jobs);
   const [applicationJob, setApplicationJob] = useState<IJob>({
     _id: "",
     name: "",

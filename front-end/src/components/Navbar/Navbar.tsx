@@ -5,8 +5,6 @@ import {
   setIsAuth,
   setIsSearchingJobs,
   setScrollY,
-  setJobs,
-  setHasMoreJobs,
 } from "../../redux/slices/appSlice";
 import beneluxJobLogo1 from "../../assets/Rectangle.png";
 import beneluxJobLogo2 from "../../assets/Text.svg";

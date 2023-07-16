@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { setAfterApplyingVision } from "../../redux/slices/appSlice";
+import { useSelector } from "react-redux";
 
 const AfterApplying = (): React.JSX.Element => {
   const AfterApplyingVision = useSelector(
     (state: any) => state.app.AfterApplyingVision
   );
-  const dispatch = useDispatch();
+
   return (
     <div
       className={`flex flex-col transition duration-500 ${

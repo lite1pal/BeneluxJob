@@ -1,4 +1,4 @@
-import React, { useRef, useSyncExternalStore } from "react";
+import React, { useRef } from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import Jobs from "../Jobs/Jobs";
@@ -16,16 +16,16 @@ const MainPage = (): React.JSX.Element => {
   const FormApplyVision = useSelector(
     (state: any) => state.app.FormApplyVision
   );
-  const JobFiltersVision = useSelector(
-    (state: any) => state.app.JobFiltersVision
-  );
+  // const JobFiltersVision = useSelector(
+  //   (state: any) => state.app.JobFiltersVision
+  // );
 
-  const AfterApplyingVision = useSelector(
-    (state: any) => state.app.AfterApplyingVision
-  );
-  const ConfirmationDeleteJobVision = useSelector(
-    (state: any) => state.app.ConfirmationDeleteJobVision
-  );
+  // const AfterApplyingVision = useSelector(
+  //   (state: any) => state.app.AfterApplyingVision
+  // );
+  // const ConfirmationDeleteJobVision = useSelector(
+  //   (state: any) => state.app.ConfirmationDeleteJobVision
+  // );
 
   const divRefDetailedJob = useRef<HTMLDivElement>(null);
 
