@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteApplication = exports.getApplication = exports.updateApplication = exports.createApplication = void 0;
+exports.deleteApplications = exports.deleteApplication = exports.getApplications = exports.getApplication = exports.updateApplication = exports.createApplication = void 0;
 const applicationModel_1 = require("../models/applicationModel");
 const createApplication = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { first_name, last_name, age, phone_number, email, additionalList } = req.body;
+        const { job_id } = req.query;
         const newApplication = yield applicationModel_1.Application.create({
             first_name,
             last_name,
@@ -21,6 +22,7 @@ const createApplication = (req, res) => __awaiter(void 0, void 0, void 0, functi
             phone_number,
             email,
             additionalList,
+            job_id,
         });
         return res.status(200).json({
             message: "Application is created",
@@ -84,6 +86,24 @@ const getApplication = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getApplication = getApplication;
+const getApplications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const applications = yield applicationModel_1.Application.find();
+        return res.status(200).json({
+            message: "Applications are got",
+            result: applications,
+            status: "Success",
+        });
+    }
+    catch (err) {
+        const message = "Error occured during getting applications";
+        return res.status(500).json({
+            message,
+            status: "Server error",
+        });
+    }
+});
+exports.getApplications = getApplications;
 const deleteApplication = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { application_id } = req.params;
@@ -110,3 +130,20 @@ const deleteApplication = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.deleteApplication = deleteApplication;
+const deleteApplications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield applicationModel_1.Application.deleteMany({});
+        return res.status(200).json({
+            message: "Applications are deleted",
+            status: "Success",
+        });
+    }
+    catch (err) {
+        const message = "Error occured during deleting applications";
+        return res.status(500).json({
+            message,
+            status: "Server error",
+        });
+    }
+});
+exports.deleteApplications = deleteApplications;

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Job } from "../models/jobModel";
+import { Application } from "../models/applicationModel";
 
 export const createJob = async (
   req: Request,
@@ -7,8 +8,15 @@ export const createJob = async (
 ): Promise<Response> => {
   try {
     // destructures values from req.body
-    const { name, description, salary, hot, withLivingHouse, withoutLanguage } =
-      req.body;
+    const {
+      name,
+      description,
+      salary,
+      hot,
+      withLivingHouse,
+      withoutLanguage,
+      withoutExp,
+    } = req.body;
 
     // creates a new job in MongoDB
     const newJob = await Job.create({
@@ -18,6 +26,7 @@ export const createJob = async (
       hot,
       withLivingHouse,
       withoutLanguage,
+      withoutExp,
     });
 
     // returns response with status 200 if job is created without any errors
@@ -97,18 +106,30 @@ export const getJobs = async (
   try {
     const pageNumber: number = parseInt(req.query.page as string);
     const search = req.query.search as string;
+    const salaryLevelFilter = req.query.salaryLevelFilter;
+    const createdAtFilter = req.query.createdAtFilter as string;
+
+    const filterSettings =
+      !salaryLevelFilter && createdAtFilter.length === 0
+        ? {}
+        : { salary: { $gt: salaryLevelFilter } };
 
     let jobs;
     search.length > 0
       ? (jobs = await Job.find({ name: { $regex: search, $options: "i" } }))
-      : (jobs = await Job.find()
+      : (jobs = await Job.find(filterSettings)
           .skip(pageNumber * 10)
           .limit(10));
 
-    console.log("Number of jobs: ", jobs.length);
+    // operation to figure out if there are more jobs
+    const nextJobs = await Job.find(filterSettings)
+      .skip((pageNumber + 1) * 10)
+      .limit(10);
+    const hasMoreJobs = nextJobs.length > 0;
+
     return res.status(200).json({
       message: "Jobs are got",
-      result: jobs,
+      result: { jobs, hasMoreJobs },
       status: "Success",
     });
   } catch (err) {
@@ -130,6 +151,8 @@ export const deleteJob = async (
     const deletedCount = await Job.deleteOne({
       _id: job_id,
     });
+
+    await Application.deleteMany({ job_id });
 
     if (deletedCount.deletedCount === 0) {
       return res.status(404).json({

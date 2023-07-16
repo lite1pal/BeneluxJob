@@ -20,11 +20,15 @@ app.use(express.json());
 
 // listens to middleware functions
 app.use(morgan("dev"));
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://benelux-job.onrender.com"],
+  })
+);
 app.use(helmet());
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET!,
     resave: true,
     saveUninitialized: false,
     cookie: {

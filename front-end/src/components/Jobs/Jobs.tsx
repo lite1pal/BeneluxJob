@@ -1,56 +1,108 @@
 import { Dispatch, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setConfirmationDeleteJobVision,
   setCurrentJob,
   setFoundJobs,
+  setHasMoreJobs,
+  setIsSearchingJobs,
+  setJobFiltersVision,
   setJobs,
   setPageNumber,
+  setPageNumberChanges,
   setScrollYbefore,
 } from "../../redux/slices/appSlice";
 import { IJob } from "../Navbar/Navbar";
 import { AnyAction } from "@reduxjs/toolkit";
+import { bearerString } from "../FormAddJob/FormAddJob";
 
 export const getJobs = async (
   apiUrl: string,
   pageNumber: number,
-  dispatch: Dispatch<AnyAction>,
-  jobs: IJob[],
   isSearchingJobs: boolean,
-  pageNumberChanges: boolean = false,
-  search: string = ""
+  pageNumberChanges: boolean,
+  jobs: IJob[],
+  dispatch: Dispatch<AnyAction>,
+  search: string = "",
+  salaryLevelFilter: number = 0,
+  createdAtFilter: string = ""
 ) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: bearerString,
+    },
+  };
   const response = await fetch(
-    `${apiUrl}/jobs?page=${pageNumber}&search=${search}`
+    `${apiUrl}/jobs?page=${pageNumber}&search=${search}&salaryLevelFilter=${salaryLevelFilter}&createdAtFilter=${createdAtFilter}`,
+    requestOptions
   );
   const parseRes = await response.json();
   if (response.ok) {
     isSearchingJobs
-      ? dispatch(setFoundJobs(parseRes.result))
+      ? dispatch(setFoundJobs(parseRes.result.jobs))
       : dispatch(
           setJobs(
-            pageNumberChanges ? [...jobs, ...parseRes.result] : parseRes.result
+            pageNumberChanges
+              ? [...jobs, ...parseRes.result.jobs]
+              : parseRes.result.jobs
           )
         );
+    dispatch(setHasMoreJobs(parseRes.result.hasMoreJobs));
   } else {
     console.log(parseRes);
   }
 };
 
+export const handleJobCreatedAt = (time: Date) => {
+  const now = new Date();
+  const yesterday = new Date(now);
+  const beforeYesterday = new Date(now);
+  const beforeBeforeYesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  beforeYesterday.setDate(now.getDate() - 2);
+  beforeBeforeYesterday.setDate(now.getDate() - 3);
+  const jobCreatedAt = new Date(time).toLocaleDateString();
+  if (now.toLocaleDateString() === jobCreatedAt) {
+    return "Сьогодні";
+  } else if (yesterday.toLocaleDateString() === jobCreatedAt) {
+    return "Вчора";
+  } else {
+    return jobCreatedAt;
+  }
+};
+
 const Jobs = (): React.JSX.Element => {
   const dispatch = useDispatch();
-  const jobs = useSelector((state: any) => state.app.jobs);
   const isSearchingJobs = useSelector(
     (state: any) => state.app.isSearchingJobs
   );
+  const jobs = useSelector((state: any) => state.app.jobs);
+  const pageNumber = useSelector((state: any) => state.app.pageNumber);
+  const pageNumberChanges = useSelector(
+    (state: any) => state.app.pageNumberChanges
+  );
+  const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const foundJobs = useSelector((state: any) => state.app.foundJobs);
   const renderJobs = isSearchingJobs ? foundJobs : jobs;
-  const pageNumber = useSelector((state: any) => state.app.pageNumber);
-  const [pageNumberChanges, setPageNumberChanges] = useState(false);
-  const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const scrollY = useSelector((state: any) => state.app.scrollY);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
-  const scrollYbefore = useSelector((state: any) => state.app.scrollYbefore);
+  const hasMoreJobs = useSelector((state: any) => state.app.hasMoreJobs);
+  const [bottomReached, setBottomReached] = useState(false);
+
+  window.addEventListener("scroll", () => {
+    // Check if the user has reached the bottom of the page
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 130
+    ) {
+      // Trigger your desired event or function here
+      setBottomReached(true);
+    } else {
+      setBottomReached(false);
+    }
+  });
 
   useEffect(() => {
     return () => {
@@ -60,15 +112,9 @@ const Jobs = (): React.JSX.Element => {
   }, [dispatch]);
 
   useEffect(() => {
-    getJobs(
-      apiUrl,
-      pageNumber,
-      dispatch,
-      jobs,
-      isSearchingJobs,
-      pageNumberChanges
-    );
-    setPageNumberChanges(false);
+    getJobs(apiUrl, pageNumber, false, pageNumberChanges, jobs, dispatch);
+    dispatch(setIsSearchingJobs(false));
+    dispatch(setPageNumberChanges(false));
   }, [pageNumber]);
 
   const showJob = (job: any): void => {
@@ -80,6 +126,12 @@ const Jobs = (): React.JSX.Element => {
       {/* <p className="text-neutral-500 m-3">
     Кількість вакансій - {jobs.length}
   </p> */}
+      <div
+        onClick={() => dispatch(setJobFiltersVision(true))}
+        className="font-light w-fit text-lg m-4 border-b-2 border-gray-200 transition duration-500 hover:border-gray-400"
+      >
+        Фільтри
+      </div>
       {jobs.length === 0 ? (
         <div className="m-52" role="status">
           <svg
@@ -110,26 +162,77 @@ const Jobs = (): React.JSX.Element => {
                 currentJob._id === job._id ? "transform rotate-2" : null
               }`}
             >
-              <div className="m-2 p-4">
-                <div className="flex w-4/12 justify-between">
-                  <div className="font-medium text-xl transition items-center">
-                    {job.name}
+              <div className="flex flex-col space-y-4 m-2 p-5">
+                <div className="flex justify-between items-center">
+                  <div className="flex w-4/6 space-x-3 items-center">
+                    <div className="font-medium text-xl transition items-center">
+                      {job.name}
+                    </div>
+                    {job.hot ? (
+                      <i
+                        className="fa-solid fa-fire fa-lg"
+                        style={{ color: "red", opacity: 0.75 }}
+                      ></i>
+                    ) : null}
+                  </div>
+                  <div
+                    onClick={() => {
+                      dispatch(setCurrentJob({ job_id: job._id }));
+                      dispatch(setConfirmationDeleteJobVision(true));
+                    }}
+                    className="mr-3 hover:opacity-50"
+                  >
+                    <i className="fa-solid fa-trash fa-lg"></i>
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-extrabold">{job.salary}$ / год</div>
-                  <div className="my-2 text-sm">{job.description}</div>
+                  <div className="font-extrabold flex space-x-1 text-green-900">
+                    <div>{job.salary}</div>
+                    <div>
+                      <i className="fa-solid fa-dollar-sign"></i> / год
+                    </div>
+                  </div>
+                  <div className="my-2 text-sm">
+                    {job.description.slice(0, 200)}...
+                  </div>
                 </div>
 
+                <div className="w-full flex flex-grow space-x-5 text-sm text-gray-500">
+                  {job.hot && (
+                    <div className="p-1 flex space-x-1 items-center">
+                      <i className="fa-solid fa-fire fa-sm"></i>
+                      <div>Гаряча</div>
+                    </div>
+                  )}
+                  {job.withLivingHouse && (
+                    <div className="p-1 flex space-x-1 items-center">
+                      <i className="fa-solid fa-house fa-sm"></i>
+                      <div>З житлом</div>
+                    </div>
+                  )}
+                  {job.withoutLanguage && (
+                    <div className="p-1 flex space-x-1 items-center">
+                      <i className="fa-solid fa-earth-americas fa-sm"></i>
+                      <div>Без мови</div>
+                    </div>
+                  )}
+                  {job.withoutExp && (
+                    <div className="p-1 flex space-x-1 items-center">
+                      <i className="fa-solid fa-briefcase fa-sm"></i>
+                      <div>Без досвіду</div>
+                    </div>
+                  )}
+                </div>
+
+                <hr />
                 <div className="w-full my-2 flex justify-between">
                   <div className="italic opacity-70">
-                    {new Date(job.createdAt).toLocaleDateString()}
+                    {handleJobCreatedAt(job.createdAt)}
                   </div>
                   <button
                     onClick={() => {
                       showJob(job);
                       dispatch(setScrollYbefore(scrollY));
-                      console.log(scrollYbefore);
                       screenWidth <= 650 ? window.scrollTo(0, 0) : null;
                       scrollY < 150
                         ? window.scrollTo({ top: 150, behavior: "smooth" })
@@ -149,7 +252,9 @@ const Jobs = (): React.JSX.Element => {
 
       <div
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed left-1/2 bottom-12 sm:bottom-16 sm:left-2 p-4 sm:p-4 bg-green-400 ${
+        className={`fixed left-1/2 ${
+          bottomReached ? "bottom-36" : "bottom-12"
+        } sm:bottom-16 sm:left-2 p-4 bg-green-400 ${
           scrollY > 150 ? "opacity-100" : "opacity-0 pointer-events-none"
         } transition duration-700 hover:bg-green-500 rounded-3xl`}
       >
@@ -159,10 +264,10 @@ const Jobs = (): React.JSX.Element => {
       <div
         onClick={() => {
           dispatch(setPageNumber(pageNumber + 1));
-          setPageNumberChanges(true);
+          dispatch(setPageNumberChanges(true));
         }}
         className={`mx-auto my-4 ${
-          isSearchingJobs || jobs.length === 0
+          isSearchingJobs || !hasMoreJobs
             ? "opacity-0 pointer-events-none"
             : "opacity-100"
         } border-2 hover:bg-green-200 border-gray-400 rounded w-fit p-4 font-light text-lg`}

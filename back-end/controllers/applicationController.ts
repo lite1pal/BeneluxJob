@@ -9,6 +9,8 @@ export const createApplication = async (
     const { first_name, last_name, age, phone_number, email, additionalList } =
       req.body;
 
+    const { job_id } = req.query;
+
     const newApplication = await Application.create({
       first_name,
       last_name,
@@ -16,6 +18,7 @@ export const createApplication = async (
       phone_number,
       email,
       additionalList,
+      job_id,
     });
 
     return res.status(200).json({
@@ -86,6 +89,26 @@ export const getApplication = async (
   }
 };
 
+export const getApplications = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const applications = await Application.find();
+    return res.status(200).json({
+      message: "Applications are got",
+      result: applications,
+      status: "Success",
+    });
+  } catch (err) {
+    const message = "Error occured during getting applications";
+    return res.status(500).json({
+      message,
+      status: "Server error",
+    });
+  }
+};
+
 export const deleteApplication = async (
   req: Request,
   res: Response
@@ -108,6 +131,25 @@ export const deleteApplication = async (
   } catch (err) {
     const message = "Error occured during deleting an application";
     console.error(message, err);
+    return res.status(500).json({
+      message,
+      status: "Server error",
+    });
+  }
+};
+
+export const deleteApplications = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    await Application.deleteMany({});
+    return res.status(200).json({
+      message: "Applications are deleted",
+      status: "Success",
+    });
+  } catch (err) {
+    const message = "Error occured during deleting applications";
     return res.status(500).json({
       message,
       status: "Server error",

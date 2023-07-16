@@ -138,8 +138,8 @@ const SignIn = (): React.JSX.Element => {
                   }}
                   shape="circle"
                   type="icon"
-                  useOneTap
                   auto_select
+                  useOneTap
                 />
                 {/* <i className="fa-brands fa-facebook fa-2xl"></i> */}
               </div>

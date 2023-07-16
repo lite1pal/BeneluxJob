@@ -2,20 +2,23 @@ import express from "express";
 import {
   createApplication,
   deleteApplication,
+  deleteApplications,
   getApplication,
+  getApplications,
   updateApplication,
 } from "../controllers/applicationController";
-import { handleValidationErrors } from "../helpers/helpers";
+import { auth, handleValidationErrors } from "../helpers/helpers";
 import {
   createApplicationValidator,
   deleteApplicationValidator,
   getApplicationValidator,
   updateApplicationValidator,
-} from "../validators/applicationRouter";
+} from "../validators/applicationValidator";
 export const applicationRouter = express.Router();
 
 applicationRouter.post(
   "/create",
+  auth,
   createApplicationValidator,
   handleValidationErrors,
   createApplication
@@ -23,6 +26,7 @@ applicationRouter.post(
 
 applicationRouter.put(
   "/update/:application_id",
+  auth,
   updateApplicationValidator,
   handleValidationErrors,
   updateApplication
@@ -30,14 +34,20 @@ applicationRouter.put(
 
 applicationRouter.get(
   "/:application_id",
+  auth,
   getApplicationValidator,
   handleValidationErrors,
   getApplication
 );
 
+applicationRouter.get("/", auth, getApplications);
+
 applicationRouter.delete(
   "/delete/:application_id",
+  auth,
   deleteApplicationValidator,
   handleValidationErrors,
   deleteApplication
 );
+
+applicationRouter.delete("/delete", deleteApplications);

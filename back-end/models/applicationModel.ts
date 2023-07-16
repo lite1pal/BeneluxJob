@@ -7,16 +7,18 @@ interface IApplication {
   phone_number: number;
   email: string;
   additionalList: string;
+  job_id: mongoose.Types.ObjectId;
 }
 
 const applicationSchema = new Schema(
   {
-    first_name: String,
-    last_name: String,
-    age: Number,
-    phone_number: Number,
-    email: String,
-    additionalList: String,
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    age: { type: Number, required: true },
+    phone_number: { type: Number, required: true },
+    email: { type: String, required: true, unique: true },
+    additionalList: { type: String },
+    job_id: { type: String, ref: "Job", required: true },
   },
   { timestamps: true }
 );

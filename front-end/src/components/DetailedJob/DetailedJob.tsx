@@ -16,6 +16,7 @@ const DetailedJob = ({
   const scrollY = useSelector((state: any) => state.app.scrollY);
   const scrollYbefore = useSelector((state: any) => state.app.scrollYbefore);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
+  const jobs = useSelector((state: any) => state.app.jobs);
 
   useEffect(() => {
     if (divRefDetailedJob.current !== null) {
@@ -38,8 +39,8 @@ const DetailedJob = ({
         }}
         onMouseLeave={() => dispatch(setMainPageScrollVision(true))}
         ref={divRefDetailedJob}
-        className={`p-8 mx-1 border-2 border-black sm:mx-4 my-2 flex flex-col space-y-4 sm:fixed ${
-          scrollY < 150 ? "sm:relative sm:w-full" : ""
+        className={`p-8 mx-1 sm:mx-4 my-2 flex flex-col space-y-4 sm:fixed ${
+          scrollY < 150 && jobs.length > 2 ? "sm:relative sm:w-full" : ""
         } sm:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
       >
         <div className="flex w-full justify-between">
@@ -56,50 +57,45 @@ const DetailedJob = ({
             <i className="fa-solid fa-xmark fa-2xl"></i>
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col space-y-4">
           <div className="font-extrabold">{currentJob.salary}$ / год</div>
-          <div>Брюссель</div>
-          <hr className="border-1 border-gray-400" />
-          <div className="my-2 text-sm p-6">
-            {currentJob.description}While flexbox is a great tool for building
-            responsive layouts, it's worth noting that there are other CSS
-            modules and techniques available, such as CSS Grid and media
-            queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.While flexbox is a great tool
-            for building responsive layouts, it's worth noting that there are
-            other CSS modules and techniques available, such as CSS Grid and
-            media queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.While flexbox is a great tool
-            for building responsive layouts, it's worth noting that there are
-            other CSS modules and techniques available, such as CSS Grid and
-            media queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.While flexbox is a great tool
-            for building responsive layouts, it's worth noting that there are
-            other CSS modules and techniques available, such as CSS Grid and
-            media queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.While flexbox is a great tool
-            for building responsive layouts, it's worth noting that there are
-            other CSS modules and techniques available, such as CSS Grid and
-            media queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.While flexbox is a great tool
-            for building responsive layouts, it's worth noting that there are
-            other CSS modules and techniques available, such as CSS Grid and
-            media queries, which can also be used to create responsive designs.
-            Depending on the complexity of your website's layout, you may find
-            it beneficial to combine flexbox with these other techniques to
-            achieve your desired responsiveness.
+          <div className="flex space-x-1 text-gray-700 items-center">
+            <i className="fa-solid fa-location-dot"></i>
+            <div>Брюссель</div>
+          </div>
+          <div className="w-full flex flex-grow space-x-5 text-sm text-gray-500">
+            {currentJob.hot && (
+              <div className="p-1 flex space-x-1 items-center">
+                <i className="fa-solid fa-fire fa-sm"></i>
+                <div>Гаряча</div>
+              </div>
+            )}
+            {currentJob.withLivingHouse && (
+              <div className="p-1 flex space-x-1 items-center">
+                <i className="fa-solid fa-house fa-sm"></i>
+                <div>З житлом</div>
+              </div>
+            )}
+            {currentJob.withoutLanguage && (
+              <div className="p-1 flex space-x-1 items-center">
+                <i className="fa-solid fa-earth-americas fa-sm"></i>
+                <div>Без мови</div>
+              </div>
+            )}
+            {currentJob.withoutExp && (
+              <div className="p-1 flex space-x-1 items-center">
+                <i className="fa-solid fa-briefcase fa-sm"></i>
+                <div>Без досвіду</div>
+              </div>
+            )}
           </div>
           <hr className="border-1 border-gray-400" />
+          <div className="my-2 text-base">{currentJob.description}</div>
+          <hr className="border-1 border-gray-400" />
+          <div className="flex space-x-2">
+            <div className="italic text-blue-900 opacity-70">+380671904107</div>
+            <div>Ludmyla</div>
+          </div>
         </div>
 
         <div className="w-full my-2 flex justify-between">

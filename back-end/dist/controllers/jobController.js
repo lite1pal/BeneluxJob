@@ -11,10 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteJobs = exports.deleteJob = exports.getJobs = exports.getJob = exports.updateJob = exports.createJob = void 0;
 const jobModel_1 = require("../models/jobModel");
+const applicationModel_1 = require("../models/applicationModel");
 const createJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // destructures values from req.body
-        const { name, description, salary, hot, withLivingHouse, withoutLanguage } = req.body;
+        const { name, description, salary, hot, withLivingHouse, withoutLanguage, withoutExp, } = req.body;
         // creates a new job in MongoDB
         const newJob = yield jobModel_1.Job.create({
             name,
@@ -23,6 +24,7 @@ const createJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             hot,
             withLivingHouse,
             withoutLanguage,
+            withoutExp,
         });
         // returns response with status 200 if job is created without any errors
         return res.status(200).json({
@@ -93,16 +95,25 @@ const getJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const pageNumber = parseInt(req.query.page);
         const search = req.query.search;
+        const salaryLevelFilter = req.query.salaryLevelFilter;
+        const createdAtFilter = req.query.createdAtFilter;
+        const filterSettings = !salaryLevelFilter && createdAtFilter.length === 0
+            ? {}
+            : { salary: { $gt: salaryLevelFilter } };
         let jobs;
         search.length > 0
             ? (jobs = yield jobModel_1.Job.find({ name: { $regex: search, $options: "i" } }))
-            : (jobs = yield jobModel_1.Job.find()
+            : (jobs = yield jobModel_1.Job.find(filterSettings)
                 .skip(pageNumber * 10)
                 .limit(10));
-        console.log("Number of jobs: ", jobs.length);
+        // operation to figure out if there are more jobs
+        const nextJobs = yield jobModel_1.Job.find(filterSettings)
+            .skip((pageNumber + 1) * 10)
+            .limit(10);
+        const hasMoreJobs = nextJobs.length > 0;
         return res.status(200).json({
             message: "Jobs are got",
-            result: jobs,
+            result: { jobs, hasMoreJobs },
             status: "Success",
         });
     }
@@ -121,6 +132,7 @@ const deleteJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const deletedCount = yield jobModel_1.Job.deleteOne({
             _id: job_id,
         });
+        yield applicationModel_1.Application.deleteMany({ job_id });
         if (deletedCount.deletedCount === 0) {
             return res.status(404).json({
                 message: "Job does not exist",

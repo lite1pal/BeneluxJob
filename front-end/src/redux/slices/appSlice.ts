@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-let status = "prod";
+let status = "production";
 
 const initialState = {
   isAuth: true,
@@ -18,9 +18,15 @@ const initialState = {
   isSearchingJobs: false,
   foundJobs: [],
   pageNumber: 0,
+  pageNumberChanges: false,
   mainPageScrollVision: true,
   FormApplyVision: false,
   scrollYbefore: 0,
+  applications: [],
+  JobFiltersVision: false,
+  hasMoreJobs: false,
+  ConfirmationDeleteJobVision: false,
+  AfterApplyingVision: false,
 };
 
 export const appSlice = createSlice({
@@ -69,6 +75,24 @@ export const appSlice = createSlice({
     setScrollYbefore: (state, action) => {
       state.scrollYbefore = action.payload;
     },
+    setApplications: (state, action) => {
+      state.applications = action.payload;
+    },
+    setJobFiltersVision: (state, action) => {
+      state.JobFiltersVision = action.payload;
+    },
+    setHasMoreJobs: (state, action) => {
+      state.hasMoreJobs = action.payload;
+    },
+    setPageNumberChanges: (state, action) => {
+      state.pageNumberChanges = action.payload;
+    },
+    setConfirmationDeleteJobVision: (state, action) => {
+      state.ConfirmationDeleteJobVision = action.payload;
+    },
+    setAfterApplyingVision: (state, action) => {
+      state.AfterApplyingVision = action.payload;
+    },
   },
 });
 
@@ -87,6 +111,12 @@ export const {
   setMainPageScrollVision,
   setFormApplyVision,
   setScrollYbefore,
+  setApplications,
+  setJobFiltersVision,
+  setHasMoreJobs,
+  setPageNumberChanges,
+  setConfirmationDeleteJobVision,
+  setAfterApplyingVision,
 } = appSlice.actions;
 
 export default appSlice.reducer;

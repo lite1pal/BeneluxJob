@@ -15,7 +15,7 @@ const userSchema = new Schema(
   {
     first_name: String,
     last_name: String,
-    email: String,
+    email: { type: String, required: true, unique: true },
     age: Number,
     phone_number: Number,
     hashedPassword: String,

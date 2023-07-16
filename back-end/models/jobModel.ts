@@ -7,16 +7,18 @@ interface IJob {
   hot: boolean;
   withLivingHouse: boolean;
   withoutLanguage: boolean;
+  withoutExp: boolean;
 }
 
 const jobSchema = new mongoose.Schema(
   {
-    name: String,
-    description: String,
-    salary: Number,
-    hot: Boolean,
-    withLivingHouse: Boolean,
-    withoutLanguage: Boolean,
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    salary: { type: Number, required: true },
+    hot: { type: Boolean, required: true, default: false },
+    withLivingHouse: { type: Boolean, required: true, default: false },
+    withoutLanguage: { type: Boolean, required: true, default: false },
+    withoutExp: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

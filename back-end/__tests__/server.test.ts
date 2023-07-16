@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
+let createdJobId: string;
+let createdApplicationId: string;
+
 beforeEach(async () => {
   await mongoose.connect(process.env.MONGODB_CONNECT_STRING!);
 });
@@ -12,7 +15,6 @@ afterEach(async () => {
 });
 
 describe("Job actions", () => {
-  let createdJobId: string;
   it("should create a job", async () => {
     const response = await request(app).post("/jobs/create").send({
       name: "porter",
@@ -30,7 +32,6 @@ describe("Job actions", () => {
       .put(`/jobs/update/${createdJobId}`)
       .send({ salary: 20, description: "easy work" });
     expect(response.statusCode).toEqual(200);
-    console.log(response.body);
   });
   it("should retrieve a job", async () => {
     const response = await request(app).get(`/jobs/${createdJobId}`);
@@ -69,15 +70,26 @@ describe("Job actions", () => {
 });
 
 describe("Application actions", () => {
-  let createdApplicationId: string;
   it("should create an application", async () => {
-    const response = await request(app).post("/applications/create").send({
-      first_name: "Andrzej",
-      last_name: "Sapkowski",
-      age: 75,
-      email: "andrzej_sapkowski@ukr.net",
-      phone_number: "0931230565",
+    const responseJob = await request(app).post("/jobs/create").send({
+      name: "porter",
+      description: "hard work",
+      salary: 10,
+      hot: true,
+      withLivingHouse: false,
+      withoutLanguage: true,
     });
+    createdJobId = responseJob.body.result._id;
+    console.log(createdJobId);
+    const response = await request(app)
+      .post(`/applications/create?job_id=${createdJobId}`)
+      .send({
+        first_name: "Andrzej",
+        last_name: "Sapkowski",
+        age: 75,
+        email: "andrzej_sapkowski@ukr.net",
+        phone_number: "0931230565",
+      });
     expect(response.statusCode).toEqual(200);
     createdApplicationId = response.body.result._id;
   });
@@ -98,5 +110,6 @@ describe("Application actions", () => {
       `/applications/delete/${createdApplicationId}`
     );
     expect(response.statusCode).toEqual(200);
+    await request(app).delete(`/jobs/delete/${createdJobId}`);
   });
 });

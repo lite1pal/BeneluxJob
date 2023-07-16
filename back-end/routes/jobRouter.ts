@@ -18,25 +18,35 @@ import {
   deleteJobs,
 } from "../controllers/jobController";
 import { handleValidationErrors } from "../helpers/helpers";
+import { auth } from "../helpers/helpers";
 
 export const jobRouter = express.Router();
 
 jobRouter.post(
   "/create",
+  auth,
   createJobValidator,
   handleValidationErrors,
   createJob
 );
 jobRouter.put(
   "/update/:job_id",
+  auth,
   updateJobValidator,
   handleValidationErrors,
   updateJob
 );
-jobRouter.get("/:job_id", getJobValidator, handleValidationErrors, getJob);
-jobRouter.get("/", getJobs);
+jobRouter.get(
+  "/:job_id",
+  auth,
+  getJobValidator,
+  handleValidationErrors,
+  getJob
+);
+jobRouter.get("/", auth, getJobs);
 jobRouter.delete(
   "/delete/:job_id",
+  auth,
   deleteJobValidator,
   handleValidationErrors,
   deleteJob

@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 export const createApplicationValidator = [
   body("first_name").isString().notEmpty().isLength({ max: 12 }),
@@ -7,6 +7,7 @@ export const createApplicationValidator = [
   body("phone_number").isMobilePhone("uk-UA").notEmpty(),
   body("email").isEmail().notEmpty(),
   body("additionalList").optional().isString().isLength({ max: 100 }),
+  query("job_id").isString().notEmpty(),
 ];
 
 export const updateApplicationValidator = [

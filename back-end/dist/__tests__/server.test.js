@@ -17,6 +17,8 @@ const app_1 = require("../app");
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+let createdJobId;
+let createdApplicationId;
 beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.connect(process.env.MONGODB_CONNECT_STRING);
 }));
@@ -24,7 +26,6 @@ afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));
 describe("Job actions", () => {
-    let createdJobId;
     it("should create a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app).post("/jobs/create").send({
             name: "porter",
@@ -42,7 +43,6 @@ describe("Job actions", () => {
             .put(`/jobs/update/${createdJobId}`)
             .send({ salary: 20, description: "easy work" });
         expect(response.statusCode).toEqual(200);
-        console.log(response.body);
     }));
     it("should retrieve a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app).get(`/jobs/${createdJobId}`);
@@ -80,9 +80,20 @@ describe("Job actions", () => {
     });
 });
 describe("Application actions", () => {
-    let createdApplicationId;
     it("should create an application", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app_1.app).post("/applications/create").send({
+        const responseJob = yield (0, supertest_1.default)(app_1.app).post("/jobs/create").send({
+            name: "porter",
+            description: "hard work",
+            salary: 10,
+            hot: true,
+            withLivingHouse: false,
+            withoutLanguage: true,
+        });
+        createdJobId = responseJob.body.result._id;
+        console.log(createdJobId);
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .post(`/applications/create?job_id=${createdJobId}`)
+            .send({
             first_name: "Andrzej",
             last_name: "Sapkowski",
             age: 75,
@@ -103,5 +114,6 @@ describe("Application actions", () => {
     it("should delete an application", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app).delete(`/applications/delete/${createdApplicationId}`);
         expect(response.statusCode).toEqual(200);
+        yield (0, supertest_1.default)(app_1.app).delete(`/jobs/delete/${createdJobId}`);
     }));
 });
