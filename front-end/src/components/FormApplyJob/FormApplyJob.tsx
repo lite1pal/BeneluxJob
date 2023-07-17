@@ -5,7 +5,6 @@ import {
   setFormApplyVision,
 } from "../../redux/slices/appSlice";
 import { useState } from "react";
-import { bearerString } from "../FormAddJob/FormAddJob";
 import { language } from "../Navbar/Navbar";
 
 const FormApplyJob = (): React.JSX.Element => {

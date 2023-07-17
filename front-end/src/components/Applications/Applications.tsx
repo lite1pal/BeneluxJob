@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setApplications } from "../../redux/slices/appSlice";
 import { handleJobCreatedAt } from "../Jobs/Jobs";
-import { IJob } from "../Navbar/Navbar";
 
 export interface IApplication {
   _id: string;
@@ -20,18 +19,18 @@ export interface IApplication {
 const Applications = (): React.JSX.Element => {
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const applications = useSelector((state: any) => state.app.applications);
-  const [applicationJob, setApplicationJob] = useState<IJob>({
-    _id: "",
-    name: "",
-    description: "",
-    salary: 0,
-    hot: false,
-    withLivingHouse: false,
-    withoutLanguage: false,
-    withoutExp: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+  // const [applicationJob, setApplicationJob] = useState<IJob>({
+  //   _id: "",
+  //   name: "",
+  //   description: "",
+  //   salary: 0,
+  //   hot: false,
+  //   withLivingHouse: false,
+  //   withoutLanguage: false,
+  //   withoutExp: false,
+  //   createdAt: new Date(),
+  //   updatedAt: new Date(),
+  // });
   const dispatch = useDispatch();
 
   const getApplications = async () => {
@@ -54,25 +53,25 @@ const Applications = (): React.JSX.Element => {
     getApplications();
   }, []);
 
-  const getApplicationJob = async (application: IApplication) => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(
-          "sessionID"
-        )} ${localStorage.getItem("email")}`,
-      },
-    };
-    const response = await fetch(
-      `${apiUrl}/jobs/${application.job_id}`,
-      requestOptions
-    );
-    const parseRes = await response.json();
-    console.log(parseRes);
-    if (response.ok) {
-      setApplicationJob(parseRes.result);
-    }
-  };
+  // const getApplicationJob = async (application: IApplication) => {
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem(
+  //         "sessionID"
+  //       )} ${localStorage.getItem("email")}`,
+  //     },
+  //   };
+  //   const response = await fetch(
+  //     `${apiUrl}/jobs/${application.job_id}`,
+  //     requestOptions
+  //   );
+  //   const parseRes = await response.json();
+  //   console.log(parseRes);
+  //   if (response.ok) {
+  //     setApplicationJob(parseRes.result);
+  //   }
+  // };
 
   return (
     <div className="w-11/12 mx-auto">

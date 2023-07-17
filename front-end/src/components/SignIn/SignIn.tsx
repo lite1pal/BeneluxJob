@@ -21,7 +21,6 @@ const SignIn = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const isLoading = useSelector((state: any) => state.app.isLoading);
-  const currentUser = useSelector((state: any) => state.app.currentUser);
   const [inputs, setInputs] = useState<IInputs>({ email: "", password: "" });
 
   const onChangeSetInputs = (e: any): void => {

@@ -10,7 +10,6 @@ import { language } from "../Navbar/Navbar";
 
 const JobFilters = (): React.JSX.Element => {
   const dispatch = useDispatch();
-  const [typeSalary, setTypeSalary] = useState("month");
   const JobFiltersVision = useSelector(
     (state: any) => state.app.JobFiltersVision
   );

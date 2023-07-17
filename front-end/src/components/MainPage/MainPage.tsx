@@ -1,21 +1,19 @@
-import React, { useEffect, useRef, useSyncExternalStore } from "react";
+import React, { useRef } from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import Jobs from "../Jobs/Jobs";
 import DetailedJob from "../DetailedJob/DetailedJob";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FormApplyJob from "../FormApplyJob/FormApplyJob";
 import JobFilters from "../JobFilters/JobFilters";
 import ConfirmationDeleteJob from "../ConfirmationDeleteJob/ConfirmationDeleteJob";
 import AfterApplying from "../AfterApplying/AfterApplying";
-import { setCurrentUser } from "../../redux/slices/appSlice";
 
 const MainPage = (): React.JSX.Element => {
-  const dispatch = useDispatch();
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
   const currentUser = useSelector((state: any) => state.app.currentUser);
-  const apiUrl = useSelector((state: any) => state.app.apiUrl);
+
   console.log(currentUser);
 
   const FormApplyVision = useSelector(
