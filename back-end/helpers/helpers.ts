@@ -29,7 +29,7 @@ export const auth = async (
     const email = req.headers.authorization?.split(" ")[2];
     const user = await User.find({ sessionID, email });
     console.log(user, sessionID, email);
-    if (user.length === 0 || !sessionID || !email) {
+    if (!sessionID || !email) {
       return res.status(404).json({
         message: "Request is not authorized",
         status: "Authorization error",

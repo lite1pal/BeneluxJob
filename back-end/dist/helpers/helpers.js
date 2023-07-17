@@ -35,7 +35,7 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         const email = (_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ")[2];
         const user = yield userModel_1.User.find({ sessionID, email });
         console.log(user, sessionID, email);
-        if (user.length === 0 || !sessionID || !email) {
+        if (!sessionID || !email) {
             return res.status(404).json({
                 message: "Request is not authorized",
                 status: "Authorization error",
