@@ -60,13 +60,13 @@ const DetailedJob = ({
         </div>
         <div className="flex flex-col space-y-4">
           <div className="font-extrabold">
-            {currentJob.salary}$ / год{language === "uk" ? "год" : "hour"}
+            {currentJob.salary}$ / {language === "uk" ? "год" : "hour"}
           </div>
           {/* <div className="flex space-x-1 text-gray-700 items-center">
             <i className="fa-solid fa-location-dot"></i>
             <div>Брюссель</div>
           </div> */}
-          <div className="w-full flex flex-grow space-x-5 text-sm text-gray-500">
+          <div className="w-full flex flex-col sm:flex-row flex-grow space-x-5 text-sm text-gray-500">
             {currentJob.hot && (
               <div className="p-1 flex space-x-1 items-center">
                 <i className="fa-solid fa-fire fa-sm"></i>

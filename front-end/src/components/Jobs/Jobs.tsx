@@ -64,9 +64,9 @@ export const handleJobCreatedAt = (time: Date) => {
   beforeBeforeYesterday.setDate(now.getDate() - 3);
   const jobCreatedAt = new Date(time).toLocaleDateString();
   if (now.toLocaleDateString() === jobCreatedAt) {
-    return "Сьогодні";
+    return language === "uk" ? "Сьогодні" : "Today";
   } else if (yesterday.toLocaleDateString() === jobCreatedAt) {
-    return "Вчора";
+    return language === "uk" ? "Вчора" : "Yesterday";
   } else {
     return jobCreatedAt;
   }
@@ -191,7 +191,7 @@ const Jobs = (): React.JSX.Element => {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-extrabold flex space-x-1 text-green-900">
+                  <div className="font-extrabold flex space-x-1">
                     <div>{job.salary}</div>
                     <div>
                       <i className="fa-solid fa-dollar-sign"></i> / год
