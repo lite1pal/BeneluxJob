@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-let status = "dev";
+let status = "prod";
 
 const initialState = {
   isAuth: true,
