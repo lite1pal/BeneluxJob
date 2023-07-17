@@ -202,7 +202,7 @@ const Jobs = (): React.JSX.Element => {
                   </div>
                 </div>
 
-                <div className="w-full flex flex-grow space-x-5 text-sm text-gray-500">
+                <div className="w-full flex flex-col items-center sm:flex-row flex-grow space-x-5 text-sm text-gray-500">
                   {job.hot && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-fire fa-sm"></i>
