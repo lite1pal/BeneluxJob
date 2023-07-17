@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setApplications } from "../../redux/slices/appSlice";
-import { bearerString } from "../FormAddJob/FormAddJob";
 import { handleJobCreatedAt } from "../Jobs/Jobs";
 import { IJob } from "../Navbar/Navbar";
 
@@ -39,7 +38,9 @@ const Applications = (): React.JSX.Element => {
     const requestOptions = {
       method: "GET",
       headers: {
-        Authorization: bearerString,
+        Authorization: `Bearer ${localStorage.getItem(
+          "sessionID"
+        )} ${localStorage.getItem("email")}`,
       },
     };
     const response = await fetch(`${apiUrl}/applications`, requestOptions);
@@ -54,7 +55,18 @@ const Applications = (): React.JSX.Element => {
   }, []);
 
   const getApplicationJob = async (application: IApplication) => {
-    const response = await fetch(`${apiUrl}/jobs/${application.job_id}`);
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(
+          "sessionID"
+        )} ${localStorage.getItem("email")}`,
+      },
+    };
+    const response = await fetch(
+      `${apiUrl}/jobs/${application.job_id}`,
+      requestOptions
+    );
     const parseRes = await response.json();
     console.log(parseRes);
     if (response.ok) {
@@ -66,14 +78,14 @@ const Applications = (): React.JSX.Element => {
     <div className="w-11/12 mx-auto">
       <ul>
         {applications.map((application: IApplication) => {
-          getApplicationJob(application);
+          // getApplicationJob(application);
           return (
             <li
               key={application._id}
               className={`mx-auto p-5 my-6 sm:w-1/3 border rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white transition duration-300`}
             >
               <div className="">
-                <div>Вакансія: {applicationJob.name}</div>
+                <div>Ім`я: {application.first_name}</div>
                 <div className="flex sm:w-4/12 border justify-between">
                   <div className="transition items-center">
                     Email: {application.email}

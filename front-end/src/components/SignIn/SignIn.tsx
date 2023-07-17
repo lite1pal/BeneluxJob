@@ -1,10 +1,15 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setIsAuth, setIsLoading } from "../../redux/slices/appSlice";
+import {
+  setCurrentUser,
+  setIsAuth,
+  setIsLoading,
+} from "../../redux/slices/appSlice";
 import bg_signin from "../../assets/dan-meyers-IQVFVH0ajag-unsplash 1.png";
 import { useState } from "react";
 import Loading from "../Loading/Loading";
+import { language } from "../Navbar/Navbar";
 
 interface IInputs {
   email: string;
@@ -16,6 +21,7 @@ const SignIn = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const isLoading = useSelector((state: any) => state.app.isLoading);
+  const currentUser = useSelector((state: any) => state.app.currentUser);
   const [inputs, setInputs] = useState<IInputs>({ email: "", password: "" });
 
   const onChangeSetInputs = (e: any): void => {
@@ -41,6 +47,9 @@ const SignIn = (): React.JSX.Element => {
           dispatch(setIsLoading(false));
           localStorage.setItem("sessionID", parseRes.result.sessionID);
           localStorage.setItem("email", parseRes.result.user.email);
+          localStorage.setItem("id", parseRes.result.user._id);
+          dispatch(setCurrentUser(parseRes.result.user));
+          console.log(parseRes.result.user);
           dispatch(setIsAuth(true));
           redirect("/");
         }, 1000);
@@ -92,15 +101,23 @@ const SignIn = (): React.JSX.Element => {
       <div className="w-8/12 hidden sm:flex">
         <img className="w-full h-screen" src={bg_signin} alt="field" />
         <div className="italic font-thin text-3xl absolute top-1/4 translate-x-1/2">
-          <div>Розкрийте свій потенціал:</div>
-          <div>де пристрасть зустрічається з метою!</div>
+          <div>
+            {language === "uk"
+              ? "Розкрийте свій потенціал:"
+              : "Unlock your potential"}
+          </div>
+          <div>
+            {language === "uk"
+              ? "де пристрасть зустрічається з метою!"
+              : "where the passion meets the purpose!"}
+          </div>
         </div>
       </div>
       <div className="w-full my-auto sm:w-1/3">
         <div>
           <form onSubmit={signinUser} className="flex flex-col space-y-8">
             <div className="text-3xl sm:text-2xl font-light mx-auto">
-              <h3>Вхід</h3>
+              <h3>{language === "uk" ? "Вхід" : "Sign in"}</h3>
             </div>
             <div
               onClick={(e) => console.log(e.target)}
@@ -117,18 +134,20 @@ const SignIn = (): React.JSX.Element => {
                 onChange={onChangeSetInputs}
                 className="px-8 text-lg py-2 sm:text-sm bg-transparent border-2 border-gray-400 rounded-lg"
                 type="password"
-                placeholder="Пароль"
+                placeholder={language === "uk" ? "Пароль" : "Password"}
                 name="password"
               />
               <input
                 className="border-2 border-gray-500 px-5 sm:text-lg sm:w-1/3 sm:py-2 font-normal transition hover:bg-green-200 text-2xl py-4 w-1/2 mx-auto rounded-lg"
                 type="submit"
-                value="Увійти"
+                value={language === "uk" ? "Увійти" : "Sign in"}
               />
             </div>
             <div className="flex flex-col mx-auto space-y-4">
               <div className="text-xl mx-auto sm:text-lg">
-                Або увійти за допомогою:
+                {language === "uk"
+                  ? "Або увійти за допомогою:"
+                  : "Or sign in with:"}
               </div>
               <div className="flex items-center space-x-4 mx-auto">
                 <GoogleLogin
@@ -144,12 +163,16 @@ const SignIn = (): React.JSX.Element => {
                 {/* <i className="fa-brands fa-facebook fa-2xl"></i> */}
               </div>
               <div className="flex items-center space-x-3">
-                <div className="text-xl sm:text-lg">Не маєш аккаунту?</div>
+                <div className="text-xl sm:text-lg">
+                  {language === "uk"
+                    ? "Не маєш аккаунту?"
+                    : "Don't have an account?"}
+                </div>
                 <a
                   href="/signup"
                   className="text-xl text-blue-500 sm:text-lg underline"
                 >
-                  Зареєструйся
+                  {language === "uk" ? "Зареєструйся" : "Sign up"}
                 </a>
               </div>
               {/* <a href="">Forgot password?</a> */}

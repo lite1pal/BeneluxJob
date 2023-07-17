@@ -1,3 +1,5 @@
+import { language } from "../Navbar/Navbar";
+
 const Loading = (): React.JSX.Element => {
   return (
     <div className="absolute top-1/3 left-1/2 -translate-x-16">
@@ -23,7 +25,7 @@ const Loading = (): React.JSX.Element => {
             fill="#1C64F2"
           />
         </svg>
-        Loading...
+        {language === "uk" ? "Завантаження..." : "Loading..."}
       </button>
     </div>
   );

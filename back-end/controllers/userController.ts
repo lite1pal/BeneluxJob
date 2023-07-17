@@ -2,14 +2,22 @@ import { Request, Response } from "express";
 import { User } from "../models/userModel";
 import bcrypt from "bcrypt";
 import { verifyJWT } from "../services/google";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const createUser = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const { first_name, last_name, email, age, phone_number, password } =
+    const { first_name, last_name, email, age, phone_number, password, key } =
       req.body;
+
+    let { admin } = req.body;
+
+    if (key !== process.env.ADMINKEY) {
+      admin = false;
+    }
 
     const existingUser = await User.findOne({ email });
 
@@ -28,10 +36,10 @@ export const createUser = async (
       age,
       phone_number,
       hashedPassword,
+      admin,
     });
     return res.status(200).json({
       message: "User is created",
-      result: newUser,
       status: "Success",
     });
   } catch (err) {
@@ -61,8 +69,17 @@ export const signinUser = async (
       password,
       existingUser.hashedPassword
     );
-    const { first_name, last_name, age, phone_number } = existingUser;
-    const user = { first_name, last_name, email, age, phone_number };
+    const { first_name, last_name, age, phone_number, admin, _id } =
+      existingUser;
+    const user = {
+      first_name,
+      last_name,
+      email,
+      age,
+      phone_number,
+      admin,
+      _id,
+    };
     if (!isPasswordTheSame) {
       return res.status(403).json({
         message: "Password is incorrect",
@@ -106,8 +123,10 @@ export const signinUserGoogle = async (
       const newUser = await User.create({
         email: googleUser.email,
         sessionID: req.sessionID,
+        hashedPassword: googleUser.sub,
       });
-      user = newUser;
+      const { email, admin } = newUser;
+      user = { email, admin };
     } else {
       await User.updateOne({ sessionID: req.sessionID });
       user = existingUser;
@@ -132,13 +151,32 @@ export const getUser = async (
 ): Promise<Response> => {
   try {
     const { user_id } = req.params;
-    const user = await User.findById(user_id);
-    if (!user) {
+    const foundUser = await User.findById(user_id);
+    if (!foundUser) {
       return res.status(404).json({
         message: "Not found a user",
         status: "Not found error",
       });
     }
+    const {
+      first_name,
+      last_name,
+      age,
+      email,
+      phone_number,
+      admin,
+      sessionID,
+    } = foundUser;
+    const user = {
+      first_name,
+      last_name,
+      age,
+      email,
+      phone_number,
+      admin,
+      sessionID,
+    };
+    console.log(user);
     return res.status(200).json({
       message: "User is got",
       result: user,
@@ -175,6 +213,25 @@ export const deleteUser = async (
   } catch (err) {
     const message = "Error occured during deleting a user";
     console.error(message, err);
+    return res.status(500).json({
+      message,
+      status: "Server error",
+    });
+  }
+};
+
+export const deleteUsers = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    await User.deleteMany({});
+    return res.status(200).json({
+      message: "User are deleted",
+      status: "Success",
+    });
+  } catch (err) {
+    const message = "Error occured during deleting users";
     return res.status(500).json({
       message,
       status: "Server error",

@@ -8,7 +8,7 @@ interface IUser {
   phone_number: number;
   hashedPassword: string;
   sessionID: string;
-  jwtToken: string;
+  admin: boolean;
 }
 
 const userSchema = new Schema(
@@ -20,7 +20,7 @@ const userSchema = new Schema(
     phone_number: Number,
     hashedPassword: String,
     sessionID: String,
-    jwtToken: String,
+    admin: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

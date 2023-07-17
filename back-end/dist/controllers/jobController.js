@@ -97,9 +97,11 @@ const getJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const search = req.query.search;
         const salaryLevelFilter = req.query.salaryLevelFilter;
         const createdAtFilter = req.query.createdAtFilter;
-        const filterSettings = !salaryLevelFilter && createdAtFilter.length === 0
+        const filterSettings = !salaryLevelFilter
             ? {}
-            : { salary: { $gt: salaryLevelFilter } };
+            : {
+                salary: { $gt: salaryLevelFilter },
+            };
         let jobs;
         search.length > 0
             ? (jobs = yield jobModel_1.Job.find({ name: { $regex: search, $options: "i" } }))

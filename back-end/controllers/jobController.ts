@@ -109,10 +109,11 @@ export const getJobs = async (
     const salaryLevelFilter = req.query.salaryLevelFilter;
     const createdAtFilter = req.query.createdAtFilter as string;
 
-    const filterSettings =
-      !salaryLevelFilter && createdAtFilter.length === 0
-        ? {}
-        : { salary: { $gt: salaryLevelFilter } };
+    const filterSettings = !salaryLevelFilter
+      ? {}
+      : {
+          salary: { $gt: salaryLevelFilter },
+        };
 
     let jobs;
     search.length > 0

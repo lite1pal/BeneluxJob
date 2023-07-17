@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import Loading from "../Loading/Loading";
 import { setIsLoading } from "../../redux/slices/appSlice";
 import { useNavigate } from "react-router-dom";
+import { language } from "../Navbar/Navbar";
 
 interface IInputs {
   first_name: string;
@@ -99,8 +100,7 @@ const SignUp = (): React.JSX.Element => {
       };
 
       const response = await fetch(`${apiUrl}/users/create`, requestOptions);
-      const parseRes = await response.json();
-      console.log(parseRes);
+
       if (response.ok) {
         setTimeout(() => {
           dispatch(setIsLoading(false));
@@ -123,8 +123,16 @@ const SignUp = (): React.JSX.Element => {
       <div className={`w-8/12 hidden sm:flex`}>
         <img className="w-full h-screen" src={bg_signup} alt="field" />
         <div className="italic font-thin text-3xl absolute top-1/4 translate-x-1/2">
-          <div>Розкрийте свій потенціал:</div>
-          <div>де пристрасть зустрічається з метою!</div>
+          <div>
+            {language === "uk"
+              ? "Розкрийте свій потенціал:"
+              : "Unlock your potential"}
+          </div>
+          <div>
+            {language === "uk"
+              ? "де пристрасть зустрічається з метою!"
+              : "where the passion meets the purpose!"}
+          </div>
         </div>
       </div>
 
@@ -136,7 +144,7 @@ const SignUp = (): React.JSX.Element => {
             className="flex flex-col space-y-8"
           >
             <div className="text-3xl sm:text-2xl font-light mx-auto">
-              <h3>Реєстрація</h3>
+              <h3>{language === "uk" ? "Реєстрація" : "Sign up"}</h3>
             </div>
             <div className="flex flex-col w-5/6 sm:w-4/6 mx-auto space-y-4">
               <input
@@ -165,7 +173,9 @@ const SignUp = (): React.JSX.Element => {
                   phoneCorrect ? "hidden" : "block"
                 } font-light mx-auto text-sm p-0`}
               >
-                Номер повинен починатися з 0, +380 або 380
+                {language === "uk"
+                  ? "Номер повинен починатися з 0, +380 або 380"
+                  : "Phone number must be started with 0, +380 or 380"}
               </div>
               <input
                 onChange={onChangeSetInputs}
@@ -173,7 +183,11 @@ const SignUp = (): React.JSX.Element => {
                   !phoneCorrect ? "border-2 border-red-400 outline-none" : null
                 }`}
                 type="text"
-                placeholder="Номер телефону (10 цифр)"
+                placeholder={
+                  language === "uk"
+                    ? "Номер телефону (10 цифр)"
+                    : "Phone number (10 digits)"
+                }
                 name="phone_number"
               />
               <div
@@ -181,7 +195,9 @@ const SignUp = (): React.JSX.Element => {
                   emailCorrect ? "hidden" : "block"
                 } font-light mx-auto text-sm p-0`}
               >
-                E-email повинен містити @
+                {language === "uk"
+                  ? "Email повинен містити @"
+                  : "Email must include @"}
               </div>
               <input
                 onChange={onChangeSetInputs}
@@ -198,7 +214,9 @@ const SignUp = (): React.JSX.Element => {
                   passwordCorrect ? "hidden" : "block"
                 } font-light text-sm`}
               >
-                Пароль повинен мати як найменше одну велику літеру та цифру
+                {language === "uk"
+                  ? "Пароль повинен мати як найменше одну велику літеру та цифру"
+                  : "Password must have at least one capital letter and digit"}
               </div>
               <input
                 onChange={onChangeSetInputs}
@@ -208,18 +226,26 @@ const SignUp = (): React.JSX.Element => {
                     : null
                 }`}
                 type="password"
-                placeholder="Пароль (мінімум 8 символів)"
+                placeholder={
+                  language === "uk"
+                    ? "Пароль (мінімум 8 символів)"
+                    : "Password (at least 8 characters"
+                }
                 name="password"
               />
               <input
                 className="border-2 sm:text-lg w-2/3 sm:w-2/3 sm:py-2 border-gray-500 px-5 font-normal transition hover:bg-green-200 text-2xl py-4 mx-auto rounded-lg"
                 type="submit"
-                value="Створити аккаунт"
+                value={
+                  language === "uk" ? "Створити аккаунт" : "Create an account"
+                }
               />
             </div>
             <div className="flex flex-col mx-auto space-y-4">
               <div className="text-xl sm:text-lg mx-auto">
-                Або зареєструватись за допомогою:
+                {language === "uk"
+                  ? "Або зареєструватися за допомогою:"
+                  : "Or sign up with:"}
               </div>
               <div className="flex items-center space-x-4 mx-auto">
                 <GoogleLogin
@@ -235,12 +261,14 @@ const SignUp = (): React.JSX.Element => {
                 {/* <i className="fa-brands fa-facebook fa-2xl"></i> */}
               </div>
               <div className="flex items-center mx-auto space-x-3">
-                <div className="text-xl sm:text-lg">Маєш аккаунт?</div>
+                <div className="text-xl sm:text-lg">
+                  {language === "uk" ? "Маєш аккаунт" : "Have an account?"}
+                </div>
                 <a
                   href="/signin"
                   className="text-xl text-blue-500 sm:text-lg underline"
                 >
-                  Увійди
+                  {language === "uk" ? "Увійди" : "Sign in"}
                 </a>
               </div>
               {/* <a href="">Forgot password?</a> */}

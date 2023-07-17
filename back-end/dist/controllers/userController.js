@@ -12,13 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.getUser = exports.signinUserGoogle = exports.signinUser = exports.createUser = void 0;
+exports.deleteUsers = exports.deleteUser = exports.getUser = exports.signinUserGoogle = exports.signinUser = exports.createUser = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const google_1 = require("../services/google");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { first_name, last_name, email, age, phone_number, password } = req.body;
+        const { first_name, last_name, email, age, phone_number, password, key } = req.body;
+        let { admin } = req.body;
+        if (key !== process.env.ADMINKEY) {
+            admin = false;
+        }
         const existingUser = yield userModel_1.User.findOne({ email });
         if (existingUser) {
             return res.status(403).json({
@@ -34,10 +40,10 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             age,
             phone_number,
             hashedPassword,
+            admin,
         });
         return res.status(200).json({
             message: "User is created",
-            result: newUser,
             status: "Success",
         });
     }
@@ -62,8 +68,16 @@ const signinUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         const isPasswordTheSame = yield bcrypt_1.default.compare(password, existingUser.hashedPassword);
-        const { first_name, last_name, age, phone_number } = existingUser;
-        const user = { first_name, last_name, email, age, phone_number };
+        const { first_name, last_name, age, phone_number, admin, _id } = existingUser;
+        const user = {
+            first_name,
+            last_name,
+            email,
+            age,
+            phone_number,
+            admin,
+            _id,
+        };
         if (!isPasswordTheSame) {
             return res.status(403).json({
                 message: "Password is incorrect",
@@ -103,8 +117,10 @@ const signinUserGoogle = (req, res) => __awaiter(void 0, void 0, void 0, functio
             const newUser = yield userModel_1.User.create({
                 email: googleUser.email,
                 sessionID: req.sessionID,
+                hashedPassword: googleUser.sub,
             });
-            user = newUser;
+            const { email, admin } = newUser;
+            user = { email, admin };
         }
         else {
             yield userModel_1.User.updateOne({ sessionID: req.sessionID });
@@ -128,13 +144,24 @@ exports.signinUserGoogle = signinUserGoogle;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id } = req.params;
-        const user = yield userModel_1.User.findById(user_id);
-        if (!user) {
+        const foundUser = yield userModel_1.User.findById(user_id);
+        if (!foundUser) {
             return res.status(404).json({
                 message: "Not found a user",
                 status: "Not found error",
             });
         }
+        const { first_name, last_name, age, email, phone_number, admin, sessionID, } = foundUser;
+        const user = {
+            first_name,
+            last_name,
+            age,
+            email,
+            phone_number,
+            admin,
+            sessionID,
+        };
+        console.log(user);
         return res.status(200).json({
             message: "User is got",
             result: user,
@@ -177,3 +204,20 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteUser = deleteUser;
+const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel_1.User.deleteMany({});
+        return res.status(200).json({
+            message: "User are deleted",
+            status: "Success",
+        });
+    }
+    catch (err) {
+        const message = "Error occured during deleting users";
+        return res.status(500).json({
+            message,
+            status: "Server error",
+        });
+    }
+});
+exports.deleteUsers = deleteUsers;

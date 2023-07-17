@@ -6,6 +6,7 @@ import {
 } from "../../redux/slices/appSlice";
 import { useState } from "react";
 import { bearerString } from "../FormAddJob/FormAddJob";
+import { language } from "../Navbar/Navbar";
 
 const FormApplyJob = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -65,7 +66,9 @@ const FormApplyJob = (): React.JSX.Element => {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          Authorization: bearerString,
+          Authorization: `Bearer ${localStorage.getItem(
+            "sessionID"
+          )} ${localStorage.getItem("email")}`,
         },
         body: JSON.stringify(inputs),
       };
@@ -113,7 +116,9 @@ const FormApplyJob = (): React.JSX.Element => {
           <div className="w-full px-6 py-4 sm:w-1/2 flex flex-col space-y-6 sm:mx-auto">
             <div className="flex">
               <div className="font-medium text-sm">
-                Будь ласка, заповніть форму, щоб подати заявку на вакансію!
+                {language === "uk"
+                  ? "Будь ласка, заповніть форму, щоб подати заявку на вакансію"
+                  : "Please, fulfill the form to apply for a job"}
               </div>
               <div
                 onClick={() => dispatch(setFormApplyVision(false))}
@@ -125,7 +130,7 @@ const FormApplyJob = (): React.JSX.Element => {
             <div className="flex flex-col space-y-5 sm:space-y-4">
               <div className="flex flex-col">
                 <label className="font-normal text-xs" htmlFor="first_name">
-                  Ваше ім`я
+                  {language === "uk" ? "Ваше ім`я" : "Your first name"}
                 </label>
                 <input
                   onChange={onChangeSetInputs}
@@ -138,7 +143,7 @@ const FormApplyJob = (): React.JSX.Element => {
               </div>
               <div className="flex flex-col">
                 <label className="font-normal text-xs" htmlFor="last_name">
-                  Ваше прізвище
+                  {language === "uk" ? "Ваше прізвище" : "Your last name"}
                 </label>
                 <input
                   onChange={onChangeSetInputs}
@@ -151,7 +156,7 @@ const FormApplyJob = (): React.JSX.Element => {
               </div>
               <div className="flex flex-col">
                 <label className="font-normal text-xs" htmlFor="age">
-                  Ваш вік
+                  {language === "uk" ? "Ваш вік" : "Your age"}
                 </label>
                 <input
                   onChange={onChangeSetInputs}
@@ -165,7 +170,9 @@ const FormApplyJob = (): React.JSX.Element => {
 
               <div className="flex flex-col">
                 <label className="font-normal text-xs" htmlFor="phone_number">
-                  Ваш номер телефону
+                  {language === "uk"
+                    ? "Ваш номер телефону"
+                    : "Your phone number"}
                 </label>
                 <input
                   onChange={onChangeSetInputs}
@@ -181,12 +188,16 @@ const FormApplyJob = (): React.JSX.Element => {
                 />
                 {!phoneCorrect && (
                   <div className="mt-2 text-base font-light">
-                    Номер повинен починатися з +380, 380 або 0
+                    {language === "uk"
+                      ? "Номер повинен починатися з +380, 380 або 0"
+                      : "Phone number must be started with +380, 380 or 0"}
                   </div>
                 )}
               </div>
               <div className="flex flex-col font-normal text-xs">
-                <label htmlFor="email">Ваш email</label>
+                <label htmlFor="email">
+                  {language === "uk" ? "Ваш email" : "Your email"}
+                </label>
                 <input
                   onChange={onChangeSetInputs}
                   type="email"
@@ -201,7 +212,9 @@ const FormApplyJob = (): React.JSX.Element => {
                 />
                 {!emailCorrect && (
                   <div className="mt-2 text-base font-light">
-                    Email повинен містити @
+                    {language === "uk"
+                      ? "Email повинен містити @"
+                      : "Email must include @"}
                   </div>
                 )}
               </div>
@@ -210,7 +223,9 @@ const FormApplyJob = (): React.JSX.Element => {
                   className="font-normal text-xs"
                   htmlFor="additional_list"
                 >
-                  Супровідний лист (по бажанню)
+                  {language === "uk"
+                    ? "Супровідний лист (по бажанню)"
+                    : "Additional list (optional)"}
                 </label>
                 <textarea
                   onChange={onChangeSetInputs}
@@ -233,7 +248,7 @@ const FormApplyJob = (): React.JSX.Element => {
           <input
             className="shadow-[0px_5px_10px_-3px_#4a5568] rounded-lg w-5/6 m-auto text-base bg-teal-500 px-7 py-2 sm:w-2/6"
             type="submit"
-            value="Підтвердити"
+            value={language === "uk" ? "Підтвердити" : "Submit"}
           />
         </div>
       </form>

@@ -33,6 +33,6 @@ const userSchema = new mongoose_1.Schema({
     phone_number: Number,
     hashedPassword: String,
     sessionID: String,
-    jwtToken: String,
+    admin: { type: Boolean, required: true, default: false },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model("User", userSchema);

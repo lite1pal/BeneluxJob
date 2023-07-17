@@ -6,6 +6,7 @@ import {
   setPageNumber,
 } from "../../redux/slices/appSlice";
 import { getJobs } from "../Jobs/Jobs";
+import { language } from "../Navbar/Navbar";
 
 const JobFilters = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -40,7 +41,9 @@ const JobFilters = (): React.JSX.Element => {
     >
       <div className="bg-green-100 flex flex-col h-full border-2 border-t-0 border-gray-400 border-opacity-30">
         <div className="w-full mr-auto flex items-center">
-          <div className="mx-auto p-4 text-lg font-semibold">Фільтри</div>
+          <div className="mx-auto p-4 text-lg font-semibold">
+            {language === "uk" ? "Фільтри" : "Filter"}
+          </div>
           <div
             onClick={() => dispatch(setJobFiltersVision(false))}
             className="p-3 hover:opacity-50"
@@ -50,8 +53,10 @@ const JobFilters = (): React.JSX.Element => {
         </div>
         <div className="flex flex-col mx-auto space-y-6">
           <div className="flex flex-col space-y-2">
-            <div className="text-base">Зарплата</div>
-            <div className="flex border border-gray-400 w-fit">
+            <div className="text-base">
+              {language === "uk" ? "Зарплата" : "Salary"}
+            </div>
+            {/* <div className="flex border border-gray-400 w-fit">
               <button
                 onClick={() => setTypeSalary("hour")}
                 className={`border-2 p-2 border-green-600 ${
@@ -72,19 +77,23 @@ const JobFilters = (): React.JSX.Element => {
               >
                 Щомісяця
               </button>
-            </div>
+            </div> */}
             <div onChange={onChangeSetRadioButtons}>
               <div className="flex space-x-4">
-                <input type="radio" name="salaryLevelFilter" value={20} />
-                <label>Вище 1000 $</label>
+                <input type="radio" name="salaryLevelFilter" value={8} />
+                <label>
+                  {language === "uk" ? "Вище 8 $" : "Higher than 8 $"}
+                </label>
               </div>
               <div className="flex space-x-4">
-                <input type="radio" name="salaryLevelFilter" value={50} />
-                <label>Вище 1200 $</label>
+                <input type="radio" name="salaryLevelFilter" value={12} />
+                <label>
+                  {language === "uk" ? "Вище 12 $" : "Higher than 12 $"}
+                </label>
               </div>
             </div>
           </div>
-          <div onChange={onChangeSetRadioButtons}>
+          {/* <div onChange={onChangeSetRadioButtons}>
             <div className="flex flex-col space-y-2">
               <div>Дата публікації</div>
               <div>
@@ -126,7 +135,7 @@ const JobFilters = (): React.JSX.Element => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div
           onClick={() => {

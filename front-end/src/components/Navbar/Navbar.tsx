@@ -40,6 +40,7 @@ const Navbar = (): React.JSX.Element => {
   const pageNumberChanges = useSelector(
     (state: any) => state.app.pageNumberChanges
   );
+  const currentUser = useSelector((state: any) => state.app.currentUser);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [profileClicked, setProfileClicked] = useState(false);
   const [mobileNavbarSectionsVision, setMobileNavbarSectionsVision] =
@@ -133,13 +134,13 @@ const Navbar = (): React.JSX.Element => {
             )}
           </div>
           <div
-            className={`transition duration-500 shadow-[0px_5px_7px_0px_#4a5568] ${
+            className={`transition shadow-[0px_5px_7px_0px_#4a5568] ${
               mobileNavbarSectionsVision
                 ? "opacity-100"
                 : "opacity-0 pointer-events-none"
             } absolute top-20 bg-green-200 rounded-lg left-5`}
           >
-            <div className="font-extralight flex flex-col">
+            <div className="font-extralight space-y-2 p-5 flex flex-col">
               <div
                 className={`transition-all mx-auto hover:bg-green-400 p-2 ${
                   window.location.href.includes("company_info")
@@ -151,13 +152,16 @@ const Navbar = (): React.JSX.Element => {
                 {language === "uk" ? "Компанія" : "Company"}
               </div>
               <div
-                onClick={() => redirect("/")}
+                onClick={() => {
+                  redirect("/");
+                  setMobileNavbarSectionsVision(false);
+                }}
                 className="hover:bg-green-400 p-2"
               >
                 {language === "uk" ? "Вакансії" : "Jobs"}
               </div>
               {isAuth ? <hr className="border-gray-400" /> : null}
-              {isAuth ? (
+              {isAuth && currentUser.admin ? (
                 <div
                   onClick={() => redirect("/add_job")}
                   className={`transition-all p-2 hover:bg-green-400 ${
@@ -166,7 +170,7 @@ const Navbar = (): React.JSX.Element => {
                       : null
                   }`}
                 >
-                  {language === "uk" ? "Додати вакансію" : "Add a job"}
+                  {language === "uk" ? "Кабінет" : "Office"}
                 </div>
               ) : null}
             </div>
@@ -260,7 +264,7 @@ const Navbar = (): React.JSX.Element => {
               </div>
             </div>
 
-            {isAuth ? (
+            {isAuth && currentUser.admin ? (
               <div
                 onClick={() => redirect("/add_job")}
                 className={`font-light text-lg border-b-2 hover:border-gray-400 hover:border-opacity-70 transition-all ${

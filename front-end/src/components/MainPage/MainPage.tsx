@@ -1,33 +1,50 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useSyncExternalStore } from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import Jobs from "../Jobs/Jobs";
 import DetailedJob from "../DetailedJob/DetailedJob";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FormApplyJob from "../FormApplyJob/FormApplyJob";
 import JobFilters from "../JobFilters/JobFilters";
 import ConfirmationDeleteJob from "../ConfirmationDeleteJob/ConfirmationDeleteJob";
 import AfterApplying from "../AfterApplying/AfterApplying";
+import { setCurrentUser } from "../../redux/slices/appSlice";
 
 const MainPage = (): React.JSX.Element => {
+  const dispatch = useDispatch();
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
+  const currentUser = useSelector((state: any) => state.app.currentUser);
+  const apiUrl = useSelector((state: any) => state.app.apiUrl);
+  console.log(currentUser);
 
   const FormApplyVision = useSelector(
     (state: any) => state.app.FormApplyVision
   );
-  // const JobFiltersVision = useSelector(
-  //   (state: any) => state.app.JobFiltersVision
-  // );
-
-  // const AfterApplyingVision = useSelector(
-  //   (state: any) => state.app.AfterApplyingVision
-  // );
-  // const ConfirmationDeleteJobVision = useSelector(
-  //   (state: any) => state.app.ConfirmationDeleteJobVision
-  // );
 
   const divRefDetailedJob = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const requestOptions = {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem(
+  //           "sessionID"
+  //         )} ${localStorage.getItem("email")}`,
+  //       },
+  //     };
+  //     const response = await fetch(
+  //       `${apiUrl}/users/${localStorage.getItem("id")}`,
+  //       requestOptions
+  //     );
+  //     const parseRes = await response.json();
+  //     if (response.ok) {
+  //       dispatch(setCurrentUser(parseRes.result));
+  //     }
+  //   };
+  //   getUser();
+  // }, []);
 
   return (
     <div className={`flex flex-col w-screen min-h-screen bg-green-100`}>
@@ -39,7 +56,7 @@ const MainPage = (): React.JSX.Element => {
         )}
         <JobFilters />
         <FormApplyJob />
-        <ConfirmationDeleteJob />
+        {currentUser.admin && <ConfirmationDeleteJob />}
         <AfterApplying />
       </div>
 

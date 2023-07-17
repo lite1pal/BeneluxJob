@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { language } from "../Navbar/Navbar";
 
 const AfterApplying = (): React.JSX.Element => {
   const AfterApplyingVision = useSelector(
@@ -12,8 +13,9 @@ const AfterApplying = (): React.JSX.Element => {
       } bg-white absolute w-4/6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-[0px_5px_10px_-3px_#4a5568]`}
     >
       <div className="p-10 text-2xl mx-auto">
-        Відгук відправлений, очікуйте будь ласка звінок або повідомлення на ваш
-        email
+        {language === "uk"
+          ? "Відгук відправлений, очікуйте будь ласка звінок або повідомлення на ваш email"
+          : "Application was sent, await please for a call or a message on your email"}
       </div>
       <hr />
       {/* <div className="flex flex-col p-10 space-y-6 sm:w-1/2 sm:mx-auto">

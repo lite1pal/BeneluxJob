@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-let status = "production";
+let status = "dev";
 
 const initialState = {
   isAuth: true,
@@ -27,6 +27,7 @@ const initialState = {
   hasMoreJobs: false,
   ConfirmationDeleteJobVision: false,
   AfterApplyingVision: false,
+  currentUser: {},
 };
 
 export const appSlice = createSlice({
@@ -93,6 +94,9 @@ export const appSlice = createSlice({
     setAfterApplyingVision: (state, action) => {
       state.AfterApplyingVision = action.payload;
     },
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
   },
 });
 
@@ -117,6 +121,7 @@ export const {
   setPageNumberChanges,
   setConfirmationDeleteJobVision,
   setAfterApplyingVision,
+  setCurrentUser,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -17,7 +17,7 @@ import {
   getJobs,
   deleteJobs,
 } from "../controllers/jobController";
-import { handleValidationErrors } from "../helpers/helpers";
+import { admin, handleValidationErrors } from "../helpers/helpers";
 import { auth } from "../helpers/helpers";
 
 export const jobRouter = express.Router();
@@ -32,6 +32,7 @@ jobRouter.post(
 jobRouter.put(
   "/update/:job_id",
   auth,
+  admin,
   updateJobValidator,
   handleValidationErrors,
   updateJob
@@ -43,12 +44,11 @@ jobRouter.get(
   handleValidationErrors,
   getJob
 );
-jobRouter.get("/", auth, getJobs);
+jobRouter.get("/", getJobs);
 jobRouter.delete(
   "/delete/:job_id",
-  auth,
   deleteJobValidator,
   handleValidationErrors,
   deleteJob
 );
-jobRouter.delete("/delete", deleteJobs);
+// jobRouter.delete("/delete", deleteJobs);

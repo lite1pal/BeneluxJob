@@ -7,7 +7,7 @@ import {
   getApplications,
   updateApplication,
 } from "../controllers/applicationController";
-import { auth, handleValidationErrors } from "../helpers/helpers";
+import { admin, auth, handleValidationErrors } from "../helpers/helpers";
 import {
   createApplicationValidator,
   deleteApplicationValidator,
@@ -35,16 +35,18 @@ applicationRouter.put(
 applicationRouter.get(
   "/:application_id",
   auth,
+  admin,
   getApplicationValidator,
   handleValidationErrors,
   getApplication
 );
 
-applicationRouter.get("/", auth, getApplications);
+applicationRouter.get("/", auth, admin, getApplications);
 
 applicationRouter.delete(
   "/delete/:application_id",
   auth,
+  admin,
   deleteApplicationValidator,
   handleValidationErrors,
   deleteApplication

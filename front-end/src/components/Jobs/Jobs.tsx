@@ -12,7 +12,7 @@ import {
   setPageNumberChanges,
   setScrollYbefore,
 } from "../../redux/slices/appSlice";
-import { IJob } from "../Navbar/Navbar";
+import { IJob, language } from "../Navbar/Navbar";
 import { AnyAction } from "@reduxjs/toolkit";
 import { bearerString } from "../FormAddJob/FormAddJob";
 
@@ -89,6 +89,7 @@ const Jobs = (): React.JSX.Element => {
   const scrollY = useSelector((state: any) => state.app.scrollY);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
   const hasMoreJobs = useSelector((state: any) => state.app.hasMoreJobs);
+  const currentUser = useSelector((state: any) => state.app.currentUser);
   const [bottomReached, setBottomReached] = useState(false);
 
   window.addEventListener("scroll", () => {
@@ -130,7 +131,7 @@ const Jobs = (): React.JSX.Element => {
         onClick={() => dispatch(setJobFiltersVision(true))}
         className="font-light w-fit text-lg m-4 border-b-2 border-gray-200 transition duration-500 hover:border-gray-400"
       >
-        Фільтри
+        {language === "uk" ? "Фільтри" : "Filters"}
       </div>
       {jobs.length === 0 ? (
         <div className="m-52" role="status">
@@ -180,7 +181,11 @@ const Jobs = (): React.JSX.Element => {
                       dispatch(setCurrentJob({ job_id: job._id }));
                       dispatch(setConfirmationDeleteJobVision(true));
                     }}
-                    className="mr-3 hover:opacity-50"
+                    className={`mr-3 hover:opacity-50 ${
+                      currentUser.admin
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none"
+                    }`}
                   >
                     <i className="fa-solid fa-trash fa-lg"></i>
                   </div>
@@ -201,25 +206,33 @@ const Jobs = (): React.JSX.Element => {
                   {job.hot && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-fire fa-sm"></i>
-                      <div>Гаряча</div>
+                      <div>{language === "uk" ? "Гаряча" : "Hot"}</div>
                     </div>
                   )}
                   {job.withLivingHouse && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-house fa-sm"></i>
-                      <div>З житлом</div>
+                      <div>
+                        {language === "uk" ? "З житлом" : "With a living house"}
+                      </div>
                     </div>
                   )}
                   {job.withoutLanguage && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-earth-americas fa-sm"></i>
-                      <div>Без мови</div>
+                      <div>
+                        {language === "uk" ? "Без мови" : "Without a language"}
+                      </div>
                     </div>
                   )}
                   {job.withoutExp && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-briefcase fa-sm"></i>
-                      <div>Без досвіду</div>
+                      <div>
+                        {language === "uk"
+                          ? "Без досвіду"
+                          : "Without work experience"}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -240,7 +253,9 @@ const Jobs = (): React.JSX.Element => {
                     }}
                     className="flex items-center space-x-2 px-5 py-2 text-sm transition-all bg-green-300 hover:bg-green-400 rounded shadow"
                   >
-                    <div>Дізнатись більше</div>
+                    <div>
+                      {language === "uk" ? "Дізнатись більше" : "Learn more"}
+                    </div>
                     <i className="fa-solid fa-arrow-right"></i>
                   </button>
                 </div>
@@ -272,7 +287,7 @@ const Jobs = (): React.JSX.Element => {
             : "opacity-100"
         } border-2 hover:bg-green-200 border-gray-400 rounded w-fit p-4 font-light text-lg`}
       >
-        Наступні вакансії
+        Наступні вакансії{language === "uk" ? "Наступні вакансії" : "Next jobs"}
       </div>
     </div>
   );
