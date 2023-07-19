@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   setCurrentUser,
+  setFoundJobs,
   setIsAuth,
   setIsLoading,
 } from "../../redux/slices/appSlice";
@@ -10,6 +11,7 @@ import bg_signin from "../../assets/dan-meyers-IQVFVH0ajag-unsplash 1.png";
 import { useState } from "react";
 import Loading from "../Loading/Loading";
 import { language } from "../Navbar/Navbar";
+import Cookies from "js-cookie";
 
 interface IInputs {
   email: string;
@@ -22,6 +24,7 @@ const SignIn = (): React.JSX.Element => {
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
   const isLoading = useSelector((state: any) => state.app.isLoading);
   const [inputs, setInputs] = useState<IInputs>({ email: "", password: "" });
+  const [errorResponse, setErrorResponse] = useState("");
 
   const onChangeSetInputs = (e: any): void => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -40,18 +43,32 @@ const SignIn = (): React.JSX.Element => {
       };
       const response = await fetch(`${apiUrl}/users/signin`, requestOptions);
       const parseRes = await response.json();
-      console.log(parseRes);
       if (response.ok) {
         setTimeout(() => {
-          dispatch(setIsLoading(false));
           localStorage.setItem("sessionID", parseRes.result.sessionID);
           localStorage.setItem("email", parseRes.result.user.email);
           localStorage.setItem("id", parseRes.result.user._id);
+          Cookies.set("jwtToken", parseRes.result.jwtToken);
           dispatch(setCurrentUser(parseRes.result.user));
           console.log(parseRes.result.user);
           dispatch(setIsAuth(true));
+          dispatch(setIsLoading(false));
           redirect("/");
         }, 1000);
+      } else if (
+        parseRes.message === "Account with this email is not created"
+      ) {
+        dispatch(setIsLoading(false));
+        setErrorResponse(
+          language === "uk"
+            ? "Аккаунт з таким email-ом не існує"
+            : parseRes.message
+        );
+      } else if (parseRes.message === "Password is incorrect") {
+        dispatch(setIsLoading(false));
+        setErrorResponse(
+          language === "uk" ? "Пароль не вірний" : parseRes.message
+        );
       }
     } catch (err) {
       console.error(err);
@@ -80,6 +97,7 @@ const SignIn = (): React.JSX.Element => {
         localStorage.setItem("sessionID", parseRes.result.sessionID);
         localStorage.setItem("email", parseRes.result.user.email);
         dispatch(setIsAuth(true));
+        dispatch(setCurrentUser(parseRes.result.user));
         setTimeout(() => {
           dispatch(setIsLoading(false));
           redirect("/");
@@ -136,6 +154,7 @@ const SignIn = (): React.JSX.Element => {
                 placeholder={language === "uk" ? "Пароль" : "Password"}
                 name="password"
               />
+              <div className="text-red-700 text-lg">{errorResponse}</div>
               <input
                 className="border-2 border-gray-500 px-5 sm:text-lg sm:w-1/3 sm:py-2 font-normal transition hover:bg-green-200 text-2xl py-4 w-1/2 mx-auto rounded-lg"
                 type="submit"

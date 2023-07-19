@@ -3,6 +3,7 @@ import { User } from "../models/userModel";
 import bcrypt from "bcrypt";
 import { verifyJWT } from "../services/google";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const createUser = async (
@@ -38,8 +39,10 @@ export const createUser = async (
       hashedPassword,
       admin,
     });
+    const { _id } = newUser;
     return res.status(200).json({
       message: "User is created",
+      result: { _id },
       status: "Success",
     });
   } catch (err) {
@@ -89,9 +92,11 @@ export const signinUser = async (
 
     await User.updateOne({ email }, { sessionID: req.sessionID });
 
+    const jwtToken = jwt.sign({ email, _id }, process.env.JWT_SECRET!);
+
     return res.status(200).json({
       message: "User is signed in",
-      result: { sessionID: req.sessionID, user },
+      result: { sessionID: req.sessionID, user, jwtToken },
       status: "Success",
     });
   } catch (err) {

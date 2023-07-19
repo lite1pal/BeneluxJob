@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.admin = exports.auth = exports.handleValidationErrors = void 0;
 const express_validator_1 = require("express-validator");
-const userModel_1 = require("../models/userModel");
 const dotenv_1 = __importDefault(require("dotenv"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 dotenv_1.default.config();
 const handleValidationErrors = (req, res, next) => {
     const validationErrors = (0, express_validator_1.validationResult)(req);
@@ -29,19 +29,24 @@ const handleValidationErrors = (req, res, next) => {
 };
 exports.handleValidationErrors = handleValidationErrors;
 const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
-        const sessionID = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
-        const email = (_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ")[2];
-        const user = yield userModel_1.User.find({ sessionID, email });
-        console.log(user, sessionID, email);
-        if (!sessionID || !email) {
-            return res.status(404).json({
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
                 message: "Request is not authorized",
                 status: "Authorization error",
             });
         }
-        // console.log("something is not working here...");
+        const jwtToken = authHeader.split(" ")[1];
+        const decodedToken = jsonwebtoken_1.default.verify(jwtToken, process.env.JWT_SECRET);
+        const { email, _id } = decodedToken;
+        console.log(email, _id);
+        if (!email || !_id) {
+            return res.status(401).json({
+                message: "Request is not authorized",
+                status: "Authorization error",
+            });
+        }
         next();
     }
     catch (err) {
@@ -55,9 +60,9 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.auth = auth;
 const admin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _a;
     try {
-        const email = (_c = req.headers.authorization) === null || _c === void 0 ? void 0 : _c.split(" ")[2];
+        const email = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[2];
         if (email !== process.env.ADMIN_EMAIL) {
             return res.status(403).json({
                 message: "Access denied",

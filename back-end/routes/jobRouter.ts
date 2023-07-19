@@ -32,7 +32,6 @@ jobRouter.post(
 jobRouter.put(
   "/update/:job_id",
   auth,
-  admin,
   updateJobValidator,
   handleValidationErrors,
   updateJob
@@ -47,6 +46,7 @@ jobRouter.get(
 jobRouter.get("/", getJobs);
 jobRouter.delete(
   "/delete/:job_id",
+  auth,
   deleteJobValidator,
   handleValidationErrors,
   deleteJob

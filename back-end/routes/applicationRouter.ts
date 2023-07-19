@@ -35,18 +35,16 @@ applicationRouter.put(
 applicationRouter.get(
   "/:application_id",
   auth,
-  admin,
   getApplicationValidator,
   handleValidationErrors,
   getApplication
 );
 
-applicationRouter.get("/", auth, admin, getApplications);
+applicationRouter.get("/", auth, getApplications);
 
 applicationRouter.delete(
   "/delete/:application_id",
   auth,
-  admin,
   deleteApplicationValidator,
   handleValidationErrors,
   deleteApplication

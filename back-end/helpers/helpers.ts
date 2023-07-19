@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { User } from "../models/userModel";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const handleValidationErrors = (
@@ -19,23 +20,40 @@ export const handleValidationErrors = (
   next();
 };
 
+interface IDecodedToken {
+  email: string;
+  _id: string;
+}
+
 export const auth = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
   try {
-    const sessionID = req.headers.authorization?.split(" ")[1];
-    const email = req.headers.authorization?.split(" ")[2];
-    const user = await User.find({ sessionID, email });
-    console.log(user, sessionID, email);
-    if (!sessionID || !email) {
-      return res.status(404).json({
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
         message: "Request is not authorized",
         status: "Authorization error",
       });
     }
-    // console.log("something is not working here...");
+
+    const jwtToken = authHeader.split(" ")[1];
+    const decodedToken = jwt.verify(
+      jwtToken,
+      process.env.JWT_SECRET!
+    ) as IDecodedToken;
+    const { email, _id } = decodedToken;
+
+    if (!email || !_id) {
+      return res.status(401).json({
+        message: "Request is not authorized",
+        status: "Authorization error",
+      });
+    }
+
     next();
   } catch (err) {
     const message = "Error occured during authorizing a request";

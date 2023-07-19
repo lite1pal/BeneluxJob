@@ -37,11 +37,11 @@ userRouter.post(
   signinUserGoogle
 );
 userRouter.get("/:user_id", getUserValidator, handleValidationErrors, getUser);
-// userRouter.delete(
-//   "/delete/:user_id",
-//   deleteUserValidator,
-//   handleValidationErrors,
-//   deleteUser
-// );
+userRouter.delete(
+  "/delete/:user_id",
+  deleteUserValidator,
+  handleValidationErrors,
+  deleteUser
+);
 // userRouter.delete("/delete", deleteUsers);
 userRouter.post("/send_email", sendEmail);

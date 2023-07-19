@@ -17,6 +17,7 @@ const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const google_1 = require("../services/google");
 const dotenv_1 = __importDefault(require("dotenv"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 dotenv_1.default.config();
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -42,8 +43,10 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             hashedPassword,
             admin,
         });
+        const { _id } = newUser;
         return res.status(200).json({
             message: "User is created",
+            result: { _id },
             status: "Success",
         });
     }
@@ -85,9 +88,10 @@ const signinUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         yield userModel_1.User.updateOne({ email }, { sessionID: req.sessionID });
+        const jwtToken = jsonwebtoken_1.default.sign({ email, _id }, process.env.JWT_SECRET);
         return res.status(200).json({
             message: "User is signed in",
-            result: { sessionID: req.sessionID, user },
+            result: { sessionID: req.sessionID, user, jwtToken },
             status: "Success",
         });
     }

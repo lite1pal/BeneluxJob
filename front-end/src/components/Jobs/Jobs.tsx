@@ -194,7 +194,8 @@ const Jobs = (): React.JSX.Element => {
                   <div className="font-extrabold flex space-x-1">
                     <div>{job.salary}</div>
                     <div>
-                      <i className="fa-solid fa-dollar-sign"></i> / год
+                      <i className="fa-solid fa-euro-sign"></i> /
+                      {language === "uk" ? " год" : " hour"}
                     </div>
                   </div>
                   <div className="my-2 text-sm">
