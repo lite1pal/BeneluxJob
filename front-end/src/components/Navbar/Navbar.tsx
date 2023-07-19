@@ -10,6 +10,7 @@ import beneluxJobLogo1 from "../../assets/Rectangle.png";
 import beneluxJobLogo2 from "../../assets/Text.svg";
 import { useState } from "react";
 import { getJobs } from "../Jobs/Jobs";
+import Cookies from "js-cookie";
 
 export interface IJob {
   _id: string;
@@ -70,8 +71,9 @@ const Navbar = (): React.JSX.Element => {
 
   // functions
   const logOut = (): void => {
-    localStorage.removeItem("sessionID");
-    localStorage.removeItem("email");
+    Cookies.remove("jwtToken");
+    Cookies.remove("id");
+
     dispatch(setIsAuth(false));
     redirect("/signin");
   };

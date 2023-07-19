@@ -9,6 +9,7 @@ import JobFilters from "../JobFilters/JobFilters";
 import ConfirmationDeleteJob from "../ConfirmationDeleteJob/ConfirmationDeleteJob";
 import AfterApplying from "../AfterApplying/AfterApplying";
 import { setCurrentUser } from "../../redux/slices/appSlice";
+import Cookies from "js-cookie";
 
 const MainPage = (): React.JSX.Element => {
   const currentJob = useSelector((state: any) => state.app.currentJob);
@@ -28,13 +29,11 @@ const MainPage = (): React.JSX.Element => {
       const requestOptions = {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem(
-            "sessionID"
-          )} ${localStorage.getItem("email")}`,
+          Authorization: `Bearer ${Cookies.get("jwtToken")}`,
         },
       };
       const response = await fetch(
-        `${apiUrl}/users/${localStorage.getItem("id")}`,
+        `${apiUrl}/users/${Cookies.get("id")}`,
         requestOptions
       );
       const parseRes = await response.json();

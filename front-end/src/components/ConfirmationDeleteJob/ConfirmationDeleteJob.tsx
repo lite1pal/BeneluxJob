@@ -4,8 +4,8 @@ import {
   setCurrentJob,
   setJobs,
 } from "../../redux/slices/appSlice";
-import { bearerString } from "../FormAddJob/FormAddJob";
 import { IJob } from "../Navbar/Navbar";
+import Cookies from "js-cookie";
 
 const ConfirmationDeleteJob = (): React.JSX.Element => {
   const ConfirmationDeleteJobVision = useSelector(
@@ -22,7 +22,7 @@ const ConfirmationDeleteJob = (): React.JSX.Element => {
       const requestOptions = {
         method: "DELETE",
         headers: {
-          Authorization: bearerString,
+          Authorization: `Bearer ${Cookies.get("jwtToken")}`,
         },
       };
       const response = await fetch(

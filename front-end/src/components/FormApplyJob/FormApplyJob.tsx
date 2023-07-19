@@ -6,6 +6,7 @@ import {
 } from "../../redux/slices/appSlice";
 import { useState } from "react";
 import { language } from "../Navbar/Navbar";
+import Cookies from "js-cookie";
 
 const FormApplyJob = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -65,9 +66,7 @@ const FormApplyJob = (): React.JSX.Element => {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem(
-            "sessionID"
-          )} ${localStorage.getItem("email")}`,
+          Authorization: `Bearer ${Cookies.get("jwtToken")}`,
         },
         body: JSON.stringify(inputs),
       };

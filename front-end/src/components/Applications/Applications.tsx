@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setApplications } from "../../redux/slices/appSlice";
 import { handleJobCreatedAt } from "../Jobs/Jobs";
+import Cookies from "js-cookie";
 
 export interface IApplication {
   _id: string;
@@ -37,9 +38,7 @@ const Applications = (): React.JSX.Element => {
     const requestOptions = {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem(
-          "sessionID"
-        )} ${localStorage.getItem("email")}`,
+        Authorization: `Bearer ${Cookies.get("jwtToken")}`,
       },
     };
     const response = await fetch(`${apiUrl}/applications`, requestOptions);

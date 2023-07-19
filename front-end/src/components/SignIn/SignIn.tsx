@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   setCurrentUser,
-  setFoundJobs,
   setIsAuth,
   setIsLoading,
 } from "../../redux/slices/appSlice";
@@ -45,12 +44,9 @@ const SignIn = (): React.JSX.Element => {
       const parseRes = await response.json();
       if (response.ok) {
         setTimeout(() => {
-          localStorage.setItem("sessionID", parseRes.result.sessionID);
-          localStorage.setItem("email", parseRes.result.user.email);
-          localStorage.setItem("id", parseRes.result.user._id);
           Cookies.set("jwtToken", parseRes.result.jwtToken);
+          Cookies.set("id", parseRes.result.user._id);
           dispatch(setCurrentUser(parseRes.result.user));
-          console.log(parseRes.result.user);
           dispatch(setIsAuth(true));
           dispatch(setIsLoading(false));
           redirect("/");
@@ -94,8 +90,8 @@ const SignIn = (): React.JSX.Element => {
       );
       const parseRes = await response.json();
       if (response.ok) {
-        localStorage.setItem("sessionID", parseRes.result.sessionID);
-        localStorage.setItem("email", parseRes.result.user.email);
+        Cookies.set("jwtToken", parseRes.result.jwtToken);
+        Cookies.set("id", parseRes.result.user._id);
         dispatch(setIsAuth(true));
         dispatch(setCurrentUser(parseRes.result.user));
         setTimeout(() => {

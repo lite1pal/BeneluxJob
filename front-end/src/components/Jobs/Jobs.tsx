@@ -14,7 +14,7 @@ import {
 } from "../../redux/slices/appSlice";
 import { IJob, language } from "../Navbar/Navbar";
 import { AnyAction } from "@reduxjs/toolkit";
-import { bearerString } from "../FormAddJob/FormAddJob";
+import Cookies from "js-cookie";
 
 export const getJobs = async (
   apiUrl: string,
@@ -30,7 +30,7 @@ export const getJobs = async (
   const requestOptions = {
     method: "GET",
     headers: {
-      Authorization: bearerString,
+      Authorization: `Bearer ${Cookies.get("jwtToken")}`,
     },
   };
   const response = await fetch(

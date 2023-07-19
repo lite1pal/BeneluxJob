@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setJobs, setAfterCreatedJobVision } from "../../redux/slices/appSlice";
+import Cookies from "js-cookie";
 
 interface IInputs {
   name: string;
@@ -11,10 +12,6 @@ interface IInputs {
   withoutLanguage: boolean;
   withoutExp: boolean;
 }
-
-export const bearerString = `Bearer ${localStorage.getItem(
-  "sessionID"
-)} ${localStorage.getItem("email")}`;
 
 const FormAddJob = (): React.JSX.Element => {
   const apiUrl = useSelector((state: any) => state.app.apiUrl);
@@ -52,7 +49,7 @@ const FormAddJob = (): React.JSX.Element => {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          Authorization: bearerString,
+          Authorization: `Bearer ${Cookies.get("jwtToken")}`,
         },
         body: JSON.stringify(inputs),
       };

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsAuth, setScreenWidth } from "./redux/slices/appSlice";
 import CompanyInfoPage from "./components/CompanyInfoPage/CompanyInfoPage";
 import SignUp from "./components/SignUp/SignUp";
+import Cookies from "js-cookie";
 
 export const App = () => {
   const isAuth = useSelector((state: any) => state.app.isAuth);
@@ -14,7 +15,7 @@ export const App = () => {
 
   useEffect(() => {
     dispatch(setScreenWidth(window.innerWidth));
-    if (localStorage.getItem("sessionID")) {
+    if (Cookies.get("jwtToken")) {
       dispatch(setIsAuth(true));
     } else {
       dispatch(setIsAuth(false));
