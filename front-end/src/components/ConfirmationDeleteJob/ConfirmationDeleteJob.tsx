@@ -29,8 +29,6 @@ const ConfirmationDeleteJob = (): React.JSX.Element => {
         `${apiUrl}/jobs/delete/${job_id}`,
         requestOptions
       );
-      const parseRes = response.json();
-      console.log(parseRes);
       const jobsWithoutDeletedJob = jobs.filter((job: IJob) => {
         return job._id !== job_id;
       });
@@ -51,7 +49,7 @@ const ConfirmationDeleteJob = (): React.JSX.Element => {
         ConfirmationDeleteJobVision
           ? "opacity-100"
           : "opacity-0 pointer-events-none"
-      } bg-white absolute w-4/6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-[0px_5px_10px_-3px_#4a5568]`}
+      } bg-white fixed w-4/6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-[0px_5px_10px_-3px_#4a5568]`}
     >
       <div className="p-10 text-2xl mx-auto">
         Підтвердіть видалення вакансії

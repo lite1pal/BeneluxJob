@@ -23,6 +23,7 @@ export const handleValidationErrors = (
 interface IDecodedToken {
   email: string;
   _id: string;
+  admin: boolean;
 }
 
 export const auth = async (
@@ -71,9 +72,22 @@ export const admin = async (
   next: NextFunction
 ): Promise<void | Response> => {
   try {
-    const email = req.headers.authorization?.split(" ")[2];
-    if (email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        message: "Access denied",
+        status: "Access denied",
+      });
+    }
+    const jwtToken = authHeader.split(" ")[1];
+    const decodedToken = jwt.verify(
+      jwtToken,
+      process.env.JWT_SECRET!
+    ) as IDecodedToken;
+
+    const { admin } = decodedToken;
+    if (!admin) {
+      return res.status(401).json({
         message: "Access denied",
         status: "Access denied",
       });

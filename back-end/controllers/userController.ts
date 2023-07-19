@@ -92,11 +92,11 @@ export const signinUser = async (
 
     await User.updateOne({ email }, { sessionID: req.sessionID });
 
-    const jwtToken = jwt.sign({ email, _id }, process.env.JWT_SECRET!);
+    const jwtToken = jwt.sign({ email, _id, admin }, process.env.JWT_SECRET!);
 
     return res.status(200).json({
       message: "User is signed in",
-      result: { sessionID: req.sessionID, user, jwtToken },
+      result: { user, jwtToken },
       status: "Success",
     });
   } catch (err) {

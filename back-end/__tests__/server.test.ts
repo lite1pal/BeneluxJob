@@ -6,6 +6,7 @@ dotenv.config();
 
 let createdUserId: string;
 let jwtToken: string;
+let adminJwtToken: string;
 let createdJobId: string;
 let createdApplicationId: string;
 
@@ -33,13 +34,17 @@ describe("User actions", () => {
     const response = await request(app)
       .post("/users/signin")
       .send({ email: "test@gmail.com", password: "Test12345" });
+    const responseAdmin = await request(app)
+      .post("/users/signin")
+      .send({ email: "admin@gmail.com", password: "=cfL9tMqJXqE>yV" });
     expect(response.statusCode).toEqual(200);
     jwtToken = response.body.result.jwtToken;
+    adminJwtToken = responseAdmin.body.result.jwtToken;
   });
   it("should delete a user", async () => {
-    const response = await request(app).delete(
-      `/users/delete/${createdUserId}`
-    );
+    const response = await request(app)
+      .delete(`/users/delete/${createdUserId}`)
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
 });
@@ -56,7 +61,7 @@ describe("Job actions", () => {
         withLivingHouse: false,
         withoutLanguage: true,
       })
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
     createdJobId = response.body.result._id;
   });
@@ -64,33 +69,33 @@ describe("Job actions", () => {
     const response = await request(app)
       .put(`/jobs/update/${createdJobId}`)
       .send({ salary: 20, description: "easy work" })
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
   it("should retrieve a job", async () => {
     const response = await request(app)
       .get(`/jobs/${createdJobId}`)
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
   it("should delete a job", async () => {
     const response = await request(app)
       .delete(`/jobs/delete/${createdJobId}`)
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
   describe("Get a job errors", () => {
     it("should return status 404 if a job with such id is missing", async () => {
       const response = await request(app)
         .get(`/jobs/${createdJobId}`)
-        .set({ Authorization: `Bearer ${jwtToken}` });
+        .set({ Authorization: `Bearer ${adminJwtToken}` });
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Not found a job");
     });
     it("should return status 500 if a function with await went wrong", async () => {
       const response = await request(app)
         .get(`/jobs/1`)
-        .set({ Authorization: `Bearer ${jwtToken}` });
+        .set({ Authorization: `Bearer ${adminJwtToken}` });
       expect(response.statusCode).toEqual(500);
     });
   });
@@ -99,14 +104,14 @@ describe("Job actions", () => {
       const response = await request(app)
         .put(`/jobs/update/1`)
         .send({ salary: 20, description: "easy work" })
-        .set({ Authorization: `Bearer ${jwtToken}` });
+        .set({ Authorization: `Bearer ${adminJwtToken}` });
       expect(response.statusCode).toEqual(500);
     });
     it("should return status 404 if a job with such id is missing", async () => {
       const response = await request(app)
         .put(`/jobs/update/${createdJobId}`)
         .send({ salary: 20, description: "easy work" })
-        .set({ Authorization: `Bearer ${jwtToken}` });
+        .set({ Authorization: `Bearer ${adminJwtToken}` });
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Not found a job");
     });
@@ -125,7 +130,7 @@ describe("Application actions", () => {
         withLivingHouse: false,
         withoutLanguage: true,
       })
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     createdJobId = responseJob.body.result._id;
     const response = await request(app)
       .post(`/applications/create?job_id=${createdJobId}`)
@@ -143,20 +148,23 @@ describe("Application actions", () => {
   it("should update an application", async () => {
     const response = await request(app)
       .put(`/applications/update/${createdApplicationId}`)
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
   it("should get an application", async () => {
     const response = await request(app)
       .get(`/applications/${createdApplicationId}`)
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
   });
   it("should delete an application", async () => {
     const response = await request(app)
       .delete(`/applications/delete/${createdApplicationId}`)
-      .set({ Authorization: `Bearer ${jwtToken}` });
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
     expect(response.statusCode).toEqual(200);
-    await request(app).delete(`/jobs/delete/${createdJobId}`);
+    const responseJob = await request(app)
+      .delete(`/jobs/delete/${createdJobId}`)
+      .set({ Authorization: `Bearer ${adminJwtToken}` });
+    expect(responseJob.statusCode).toEqual(200);
   });
 });

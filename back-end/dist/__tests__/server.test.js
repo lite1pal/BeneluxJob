@@ -19,6 +19,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 let createdUserId;
 let jwtToken;
+let adminJwtToken;
 let createdJobId;
 let createdApplicationId;
 beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,11 +45,17 @@ describe("User actions", () => {
         const response = yield (0, supertest_1.default)(app_1.app)
             .post("/users/signin")
             .send({ email: "test@gmail.com", password: "Test12345" });
+        const responseAdmin = yield (0, supertest_1.default)(app_1.app)
+            .post("/users/signin")
+            .send({ email: "admin@gmail.com", password: "=cfL9tMqJXqE>yV" });
         expect(response.statusCode).toEqual(200);
         jwtToken = response.body.result.jwtToken;
+        adminJwtToken = responseAdmin.body.result.jwtToken;
     }));
     it("should delete a user", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app_1.app).delete(`/users/delete/${createdUserId}`);
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .delete(`/users/delete/${createdUserId}`)
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         expect(response.statusCode).toEqual(200);
     }));
 });
@@ -64,7 +71,7 @@ describe("Job actions", () => {
             withLivingHouse: false,
             withoutLanguage: true,
         })
-            .set({ Authorization: `Bearer ${jwtToken}` });
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         expect(response.statusCode).toEqual(200);
         createdJobId = response.body.result._id;
     }));
@@ -72,33 +79,33 @@ describe("Job actions", () => {
         const response = yield (0, supertest_1.default)(app_1.app)
             .put(`/jobs/update/${createdJobId}`)
             .send({ salary: 20, description: "easy work" })
-            .set({ Authorization: `Bearer ${jwtToken}` });
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         expect(response.statusCode).toEqual(200);
     }));
     it("should retrieve a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app)
             .get(`/jobs/${createdJobId}`)
-            .set({ Authorization: `Bearer ${jwtToken}` });
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         expect(response.statusCode).toEqual(200);
     }));
     it("should delete a job", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app_1.app)
             .delete(`/jobs/delete/${createdJobId}`)
-            .set({ Authorization: `Bearer ${jwtToken}` });
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         expect(response.statusCode).toEqual(200);
     }));
     describe("Get a job errors", () => {
         it("should return status 404 if a job with such id is missing", () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .get(`/jobs/${createdJobId}`)
-                .set({ Authorization: `Bearer ${jwtToken}` });
+                .set({ Authorization: `Bearer ${adminJwtToken}` });
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toEqual("Not found a job");
         }));
         it("should return status 500 if a function with await went wrong", () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .get(`/jobs/1`)
-                .set({ Authorization: `Bearer ${jwtToken}` });
+                .set({ Authorization: `Bearer ${adminJwtToken}` });
             expect(response.statusCode).toEqual(500);
         }));
     });
@@ -107,59 +114,66 @@ describe("Job actions", () => {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .put(`/jobs/update/1`)
                 .send({ salary: 20, description: "easy work" })
-                .set({ Authorization: `Bearer ${jwtToken}` });
+                .set({ Authorization: `Bearer ${adminJwtToken}` });
             expect(response.statusCode).toEqual(500);
         }));
         it("should return status 404 if a job with such id is missing", () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .put(`/jobs/update/${createdJobId}`)
                 .send({ salary: 20, description: "easy work" })
-                .set({ Authorization: `Bearer ${jwtToken}` });
+                .set({ Authorization: `Bearer ${adminJwtToken}` });
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toEqual("Not found a job");
         }));
     });
 });
-// describe("Application actions", () => {
-//   it("should create an application", async () => {
-//     const responseJob = await request(app).post("/jobs/create").send({
-//       name: "porter",
-//       description: "hard work",
-//       salary: 10,
-//       hot: true,
-//       withLivingHouse: false,
-//       withoutLanguage: true,
-//     });
-//     createdJobId = responseJob.body.result._id;
-//     const response = await request(app)
-//       .post(`/applications/create?job_id=${createdJobId}`)
-//       .send({
-//         first_name: "Andrzej",
-//         last_name: "Sapkowski",
-//         age: 75,
-//         email: "andrzej_sapkowski@ukr.net",
-//         phone_number: "0931230565",
-//       });
-//     expect(response.statusCode).toEqual(200);
-//     createdApplicationId = response.body.result._id;
-//   });
-//   it("should update an application", async () => {
-//     const response = await request(app).put(
-//       `/applications/update/${createdApplicationId}`
-//     );
-//     expect(response.statusCode).toEqual(200);
-//   });
-//   it("should get an application", async () => {
-//     const response = await request(app).get(
-//       `/applications/${createdApplicationId}`
-//     );
-//     expect(response.statusCode).toEqual(200);
-//   });
-//   it("should delete an application", async () => {
-//     const response = await request(app).delete(
-//       `/applications/delete/${createdApplicationId}`
-//     );
-//     expect(response.statusCode).toEqual(200);
-//     await request(app).delete(`/jobs/delete/${createdJobId}`);
-//   });
-// });
+describe("Application actions", () => {
+    it("should create an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const responseJob = yield (0, supertest_1.default)(app_1.app)
+            .post("/jobs/create")
+            .send({
+            name: "porter",
+            description: "hard work",
+            salary: 10,
+            hot: true,
+            withLivingHouse: false,
+            withoutLanguage: true,
+        })
+            .set({ Authorization: `Bearer ${jwtToken}` });
+        createdJobId = responseJob.body.result._id;
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .post(`/applications/create?job_id=${createdJobId}`)
+            .send({
+            first_name: "Andrzej",
+            last_name: "Sapkowski",
+            age: 75,
+            email: "andrzej_sapkowski@ukr.net",
+            phone_number: "0931230565",
+        })
+            .set({ Authorization: `Bearer ${jwtToken}` });
+        expect(response.statusCode).toEqual(200);
+        createdApplicationId = response.body.result._id;
+    }));
+    it("should update an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .put(`/applications/update/${createdApplicationId}`)
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
+        expect(response.statusCode).toEqual(200);
+    }));
+    it("should get an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .get(`/applications/${createdApplicationId}`)
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
+        expect(response.statusCode).toEqual(200);
+    }));
+    it("should delete an application", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .delete(`/applications/delete/${createdApplicationId}`)
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
+        expect(response.statusCode).toEqual(200);
+        const responseJob = yield (0, supertest_1.default)(app_1.app)
+            .delete(`/jobs/delete/${createdJobId}`)
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
+        expect(responseJob.statusCode).toEqual(200);
+    }));
+});

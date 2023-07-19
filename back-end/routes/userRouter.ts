@@ -14,7 +14,7 @@ import {
   signinUserValidator,
   signingUserGoogleValidator,
 } from "../validators/userValidator";
-import { handleValidationErrors } from "../helpers/helpers";
+import { auth, handleValidationErrors } from "../helpers/helpers";
 import { sendEmail } from "../services/email";
 export const userRouter = express.Router();
 
@@ -36,9 +36,16 @@ userRouter.post(
   handleValidationErrors,
   signinUserGoogle
 );
-userRouter.get("/:user_id", getUserValidator, handleValidationErrors, getUser);
+userRouter.get(
+  "/:user_id",
+  auth,
+  getUserValidator,
+  handleValidationErrors,
+  getUser
+);
 userRouter.delete(
   "/delete/:user_id",
+  auth,
   deleteUserValidator,
   handleValidationErrors,
   deleteUser

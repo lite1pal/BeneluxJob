@@ -25,6 +25,7 @@ export const jobRouter = express.Router();
 jobRouter.post(
   "/create",
   auth,
+  admin,
   createJobValidator,
   handleValidationErrors,
   createJob
@@ -32,6 +33,7 @@ jobRouter.post(
 jobRouter.put(
   "/update/:job_id",
   auth,
+  admin,
   updateJobValidator,
   handleValidationErrors,
   updateJob
@@ -39,6 +41,7 @@ jobRouter.put(
 jobRouter.get(
   "/:job_id",
   auth,
+  admin,
   getJobValidator,
   handleValidationErrors,
   getJob
@@ -47,6 +50,7 @@ jobRouter.get("/", getJobs);
 jobRouter.delete(
   "/delete/:job_id",
   auth,
+  admin,
   deleteJobValidator,
   handleValidationErrors,
   deleteJob

@@ -40,7 +40,6 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         const jwtToken = authHeader.split(" ")[1];
         const decodedToken = jsonwebtoken_1.default.verify(jwtToken, process.env.JWT_SECRET);
         const { email, _id } = decodedToken;
-        console.log(email, _id);
         if (!email || !_id) {
             return res.status(401).json({
                 message: "Request is not authorized",
@@ -60,11 +59,19 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.auth = auth;
 const admin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const email = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[2];
-        if (email !== process.env.ADMIN_EMAIL) {
-            return res.status(403).json({
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                message: "Access denied",
+                status: "Access denied",
+            });
+        }
+        const jwtToken = authHeader.split(" ")[1];
+        const decodedToken = jsonwebtoken_1.default.verify(jwtToken, process.env.JWT_SECRET);
+        const { admin } = decodedToken;
+        if (!admin) {
+            return res.status(401).json({
                 message: "Access denied",
                 status: "Access denied",
             });

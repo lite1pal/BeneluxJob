@@ -88,10 +88,10 @@ const signinUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         yield userModel_1.User.updateOne({ email }, { sessionID: req.sessionID });
-        const jwtToken = jsonwebtoken_1.default.sign({ email, _id }, process.env.JWT_SECRET);
+        const jwtToken = jsonwebtoken_1.default.sign({ email, _id, admin }, process.env.JWT_SECRET);
         return res.status(200).json({
             message: "User is signed in",
-            result: { sessionID: req.sessionID, user, jwtToken },
+            result: { user, jwtToken },
             status: "Success",
         });
     }
