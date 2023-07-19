@@ -139,7 +139,7 @@ describe("Application actions", () => {
             withLivingHouse: false,
             withoutLanguage: true,
         })
-            .set({ Authorization: `Bearer ${jwtToken}` });
+            .set({ Authorization: `Bearer ${adminJwtToken}` });
         createdJobId = responseJob.body.result._id;
         const response = yield (0, supertest_1.default)(app_1.app)
             .post(`/applications/create?job_id=${createdJobId}`)
