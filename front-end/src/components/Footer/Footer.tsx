@@ -1,6 +1,3 @@
-import ukraine_png from "../../assets/ukraine(1).png";
-import english_png from "../../assets/united-kingdom.png";
-
 const Footer = (): React.JSX.Element => {
   return (
     <footer className="w-full py-6 space-y-2 bg-black bg-opacity-30 flex flex-col items-center rounded-lg">
