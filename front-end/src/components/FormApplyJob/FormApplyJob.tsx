@@ -101,31 +101,32 @@ const FormApplyJob = (): React.JSX.Element => {
     <div
       className={`w-full ${
         FormApplyVision
-          ? "max-sm:block sm:opacity-100"
-          : "max-sm:hidden sm:opacity-0 pointer-events-none"
-      } sm:fixed sm:w-1/2 sm:translate-x-1/2 sm:top-0 sm:left-0 sm:right-0 transition duration-500`}
+          ? "max-lg:block lg:opacity-100"
+          : "max-lg:hidden lg:opacity-0 pointer-events-none"
+      } lg:fixed lg:w-1/2 lg:translate-x-1/2 lg:top-0 lg:left-0 lg:right-0 transition duration-500`}
     >
       <form
         onSubmit={createApplication}
         autoComplete="off"
         className="w-full flex flex-col space-y-4 rounded-lg shadow-[0px_5px_7px_0px_#4a5568] mx-auto my-4 bg-white"
       >
+        <div className="flex justify-between pb-0 p-4">
+          <div className="opacity-0 pointer-events-none">1</div>
+          <div className="font-medium">
+            {language === "uk"
+              ? "Будь ласка, заповніть форму, щоб подати заявку на вакансію"
+              : "Please, fulfill the form to apply for a job"}
+          </div>
+          <div
+            onClick={() => dispatch(setFormApplyVision(false))}
+            className="hover:opacity-50"
+          >
+            <i className="fa-solid fa-xmark fa-xl"></i>
+          </div>
+        </div>
         <div className="flex flex-col sm:flex-row">
           <div className="w-full px-6 py-4 sm:w-1/2 flex flex-col space-y-6 sm:mx-auto">
-            <div className="flex">
-              <div className="font-medium text-sm">
-                {language === "uk"
-                  ? "Будь ласка, заповніть форму, щоб подати заявку на вакансію"
-                  : "Please, fulfill the form to apply for a job"}
-              </div>
-              <div
-                onClick={() => dispatch(setFormApplyVision(false))}
-                className="hover:opacity-50"
-              >
-                <i className="fa-solid fa-xmark fa-xl"></i>
-              </div>
-            </div>
-            <div className="flex flex-col space-y-5 sm:space-y-4">
+            <div className="flex flex-col space-y-5 sm:space-y-6">
               <div className="flex flex-col">
                 <label className="font-normal text-xs" htmlFor="first_name">
                   {language === "uk" ? "Ваше ім`я" : "Your first name"}

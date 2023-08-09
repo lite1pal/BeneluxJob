@@ -27,10 +27,10 @@ const DetailedJob = ({
 
   return (
     <div
-      className={`w-full sm:w-1/2 transition duration-700 ${
+      className={`w-full lg:w-1/2 transition duration-700 ${
         currentJob.name
-          ? "max-sm:block sm:opacity-100"
-          : "max-sm:hidden sm:opacity-0 sm:pointer-events-none"
+          ? "max-lg:flex lg:opacity-100"
+          : "max-lg:hidden lg:opacity-0 lg:pointer-events-none"
       }`}
     >
       <div
@@ -40,9 +40,9 @@ const DetailedJob = ({
         }}
         onMouseLeave={() => dispatch(setMainPageScrollVision(true))}
         ref={divRefDetailedJob}
-        className={`p-8 mx-1 sm:mx-4 my-2 flex flex-col space-y-4 sm:fixed ${
-          scrollY < 150 && jobs.length > 2 ? "sm:relative sm:w-full" : ""
-        } sm:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
+        className={`p-8 mx-1 lg:mx-4 my-2 flex flex-col space-y-4 lg:fixed ${
+          scrollY < 150 && jobs.length > 2 ? "lg:relative lg:w-full" : ""
+        } lg:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
       >
         <div className="flex w-full justify-between">
           <div className="font-medium text-xl transition items-center">
@@ -66,13 +66,12 @@ const DetailedJob = ({
             <i className="fa-solid fa-location-dot"></i>
             <div>Брюссель</div>
           </div> */}
-          <div className="w-full flex flex-col sm:flex-row flex-grow space-x-5 text-sm text-gray-500">
-            {currentJob.hot && (
-              <div className="p-1 flex space-x-1 items-center">
-                <i className="fa-solid fa-fire fa-sm"></i>
-                <div>{language === "uk" ? "Гаряча" : "Hot"}</div>
-              </div>
-            )}
+          <div className="w-full flex flex-col lg:flex-row flex-grow space-x-5 text-sm text-gray-500">
+            <div className="p-1 flex space-x-1 items-center opacity-0 pointer-events-none">
+              <i className="fa-solid fa-fire fa-xs"></i>
+              {/* <div>{language === "uk" ? "Гаряча" : "Hot"}</div> */}
+            </div>
+
             {currentJob.withLivingHouse && (
               <div className="p-1 flex space-x-1 items-center">
                 <i className="fa-solid fa-house fa-sm"></i>

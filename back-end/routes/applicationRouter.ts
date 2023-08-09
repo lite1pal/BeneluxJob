@@ -18,7 +18,6 @@ export const applicationRouter = express.Router();
 
 applicationRouter.post(
   "/create",
-  auth,
   createApplicationValidator,
   handleValidationErrors,
   createApplication

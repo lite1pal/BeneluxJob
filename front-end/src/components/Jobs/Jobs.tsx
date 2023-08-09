@@ -123,7 +123,7 @@ const Jobs = (): React.JSX.Element => {
   };
 
   return (
-    <div className="w-full sm:w-1/2">
+    <div className="w-full sm:w-5/6 sm:mx-auto md:w-2/3 lg:w-1/2">
       {/* <p className="text-neutral-500 m-3">
     Кількість вакансій - {jobs.length}
   </p> */}
@@ -203,13 +203,12 @@ const Jobs = (): React.JSX.Element => {
                   </div>
                 </div>
 
-                <div className="w-full flex flex-col items-center sm:flex-row flex-grow space-x-5 text-sm text-gray-500">
-                  {job.hot && (
-                    <div className="p-1 flex space-x-1 items-center">
-                      <i className="fa-solid fa-fire fa-sm"></i>
-                      <div>{language === "uk" ? "Гаряча" : "Hot"}</div>
-                    </div>
-                  )}
+                <div className="w-full flex flex-col lg:flex-row flex-grow space-x-5 text-sm text-gray-500">
+                  <div className="p-1 flex space-x-1 items-center opacity-0 pointer-events-none">
+                    <i className="fa-solid fa-fire fa-xs"></i>
+                    {/* <div>{language === "uk" ? "Гаряча" : "Hot"}</div> */}
+                  </div>
+
                   {job.withLivingHouse && (
                     <div className="p-1 flex space-x-1 items-center">
                       <i className="fa-solid fa-house fa-sm"></i>

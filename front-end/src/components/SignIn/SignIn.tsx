@@ -111,9 +111,9 @@ const SignIn = (): React.JSX.Element => {
       } min-h-screen bg-green-100`}
     >
       {isLoading ? <Loading /> : null}
-      <div className="w-8/12 hidden sm:flex">
+      <div className="w-8/12 hidden lg:flex">
         <img className="w-full h-screen" src={bg_signin} alt="field" />
-        <div className="italic font-thin text-3xl absolute top-1/4 translate-x-1/2">
+        <div className="italic font-thin text-3xl absolute top-1/4 lg:translate-x-1/4 translate-x-1/2">
           <div>
             {language === "uk"
               ? "Розкрийте свій потенціал:"
@@ -126,39 +126,39 @@ const SignIn = (): React.JSX.Element => {
           </div>
         </div>
       </div>
-      <div className="w-full my-auto sm:w-1/3">
+      <div className="w-full my-auto lg:w-1/3">
         <div>
           <form onSubmit={signinUser} className="flex flex-col space-y-8">
-            <div className="text-3xl sm:text-2xl font-light mx-auto">
+            <div className="text-3xl lg:text-2xl font-light mx-auto">
               <h3>{language === "uk" ? "Вхід" : "Sign in"}</h3>
             </div>
             <div
               onClick={(e) => console.log(e.target)}
-              className="flex flex-col w-5/6 sm:w-4/6 mx-auto space-y-4"
+              className="flex flex-col sm:w-4/6 md:w-1/2 lg:w-4/6 mx-auto space-y-4"
             >
               <input
                 onChange={onChangeSetInputs}
-                className="px-8 text-lg py-2 sm:text-sm bg-transparent border-2 border-gray-400 rounded-lg"
+                className="px-8 text-lg py-2 lg:text-sm bg-transparent border-2 border-gray-400 rounded-lg"
                 type="email"
                 placeholder="E-mail"
                 name="email"
               />
               <input
                 onChange={onChangeSetInputs}
-                className="px-8 text-lg py-2 sm:text-sm bg-transparent border-2 border-gray-400 rounded-lg"
+                className="px-8 text-lg py-2 lg:text-sm bg-transparent border-2 border-gray-400 rounded-lg"
                 type="password"
                 placeholder={language === "uk" ? "Пароль" : "Password"}
                 name="password"
               />
               <div className="text-red-700 text-lg">{errorResponse}</div>
               <input
-                className="border-2 border-gray-500 px-5 sm:text-lg sm:w-1/3 sm:py-2 font-normal transition hover:bg-green-200 text-2xl py-4 w-1/2 mx-auto rounded-lg"
+                className="border-2 border-gray-500 lg:text-lg lg:w-1/3 lg:py-2 font-normal px-1 transition hover:bg-green-200 text-2xl py-4 w-1/2 mx-auto rounded-lg"
                 type="submit"
                 value={language === "uk" ? "Увійти" : "Sign in"}
               />
             </div>
             <div className="flex flex-col mx-auto space-y-4">
-              <div className="text-xl mx-auto sm:text-lg">
+              <div className="text-xl mx-auto lg:text-lg">
                 {language === "uk"
                   ? "Або увійти за допомогою:"
                   : "Or sign in with:"}
@@ -177,7 +177,7 @@ const SignIn = (): React.JSX.Element => {
                 {/* <i className="fa-brands fa-facebook fa-2xl"></i> */}
               </div>
               <div className="flex items-center space-x-3">
-                <div className="text-xl sm:text-lg">
+                <div className="text-xl lg:text-lg">
                   {language === "uk"
                     ? "Не маєш аккаунту?"
                     : "Don't have an account?"}

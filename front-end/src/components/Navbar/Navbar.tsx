@@ -75,7 +75,7 @@ const Navbar = (): React.JSX.Element => {
     Cookies.remove("id");
 
     dispatch(setIsAuth(false));
-    redirect("/signin");
+    redirect("/");
   };
 
   const onClickHandleProfileClicked = (): void => {
@@ -114,7 +114,7 @@ const Navbar = (): React.JSX.Element => {
   // html and css
   return (
     <nav className="w-screen rounded-lg">
-      {screenWidth <= 640 ? (
+      {screenWidth <= 1024 ? (
         <div className="flex items-center justify-between p-4">
           {/* 
           
@@ -200,25 +200,30 @@ const Navbar = (): React.JSX.Element => {
           <div className="flex flex-col space-y-2">
             {isAuth ? (
               <button
-                className="border border-gray-500 rounded font-extralight text-sm px-4 hover:bg-black hover:bg-opacity-5 transition duration-300"
+                className="border border-gray-500 rounded font-extralight px-4 hover:bg-black hover:bg-opacity-5 transition duration-300"
                 onClick={logOut}
               >
                 {language === "uk" ? "Вийти" : "Log out"}
               </button>
             ) : (
               <button
-                className="border border-gray-500 rounded font-extralight text-sm px-4 hover:bg-black hover:bg-opacity-5 transition duration-300"
+                className="border border-gray-500 rounded font-extralight px-4 hover:bg-black hover:bg-opacity-5 transition duration-300"
                 onClick={() => redirect("/signin")}
               >
                 {language === "uk" ? "Ввійти" : "Sign in"}
               </button>
             )}
-            <div className="space-x-3">
-              <a href="https://www.instagram.com/ludmyla.vip/?igshid=MmU2YjMzNjRlOQ%3D%3D">
+            <div className="space-x-3 items-center justify-center flex">
+              <a
+                href="https://www.instagram.com/ludmyla.vip/?igshid=MmU2YjMzNjRlOQ%3D%3D"
+                target="_blank"
+              >
                 <i className="fa-brands fa-instagram"></i>
               </a>
               <i className="fa-brands fa-telegram"></i>
-              <i className="fa-brands fa-facebook"></i>
+              <a href="https://www.facebook.com/BeneluxJOB/" target="_blank">
+                <i className="fa-brands fa-facebook"></i>
+              </a>
             </div>
           </div>
         </div>

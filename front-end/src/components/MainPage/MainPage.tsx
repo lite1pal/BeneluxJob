@@ -48,8 +48,8 @@ const MainPage = (): React.JSX.Element => {
     <div className={`flex flex-col w-screen min-h-screen bg-green-100`}>
       <Navbar />
       <div className={`flex flex-grow w-11/12 mx-auto transition duration-500`}>
-        {currentJob.name && screenWidth <= 640 ? null : <Jobs />}
-        {FormApplyVision && screenWidth <= 640 ? null : (
+        {currentJob.name && screenWidth <= 1024 ? null : <Jobs />}
+        {FormApplyVision && screenWidth <= 1024 ? null : (
           <DetailedJob divRefDetailedJob={divRefDetailedJob} />
         )}
         <JobFilters />
