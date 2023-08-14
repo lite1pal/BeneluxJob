@@ -3,7 +3,7 @@ import Navbar, { language } from "../Navbar/Navbar";
 
 const CompanyInfoPage = (): React.JSX.Element => {
   return (
-    <div className="flex flex-col w-screen min-h-screen bg-green-100">
+    <div className="flex flex-col w-screen font-raleway min-h-screen bg-green-100">
       <Navbar />
       <div className="w-full flex flex-grow">
         <div className="w-10/12 m-10 mx-auto bg-white">

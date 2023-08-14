@@ -14,10 +14,8 @@ const DetailedJob = ({
 }): React.JSX.Element => {
   const currentJob = useSelector((state: any) => state.app.currentJob);
   const dispatch = useDispatch();
-  const scrollY = useSelector((state: any) => state.app.scrollY);
   const scrollYbefore = useSelector((state: any) => state.app.scrollYbefore);
   const screenWidth = useSelector((state: any) => state.app.screenWidth);
-  const jobs = useSelector((state: any) => state.app.jobs);
 
   useEffect(() => {
     if (divRefDetailedJob.current !== null) {
@@ -27,7 +25,7 @@ const DetailedJob = ({
 
   return (
     <div
-      className={`w-full lg:w-1/2 transition duration-700 ${
+      className={`w-full lg:w-1/2 ${
         currentJob.name
           ? "max-lg:flex lg:opacity-100"
           : "max-lg:hidden lg:opacity-0 lg:pointer-events-none"
@@ -40,9 +38,7 @@ const DetailedJob = ({
         }}
         onMouseLeave={() => dispatch(setMainPageScrollVision(true))}
         ref={divRefDetailedJob}
-        className={`p-8 mx-1 lg:mx-4 my-2 flex flex-col space-y-4 lg:fixed ${
-          scrollY < 150 && jobs.length > 2 ? "lg:relative lg:w-full" : ""
-        } lg:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
+        className={`p-8 mx-1 lg:mx-4 my-2 flex flex-col space-y-4 lg:fixed lg:w-fit lg:max-h-screen transition-all duration-300 ease-in-out top-0 bottom-1 overflow-scroll rounded-lg shadow-[0px_5px_7px_0px_#4a5568] bg-white`}
       >
         <div className="flex w-full justify-between">
           <div className="font-medium text-xl transition items-center">

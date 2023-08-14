@@ -244,12 +244,10 @@ const Jobs = (): React.JSX.Element => {
                   </div>
                   <button
                     onClick={() => {
-                      showJob(job);
                       dispatch(setScrollYbefore(scrollY));
                       screenWidth <= 650 ? window.scrollTo(0, 0) : null;
-                      scrollY < 150
-                        ? window.scrollTo({ top: 150, behavior: "smooth" })
-                        : null;
+                      scrollY < 150 ? window.scrollTo({ top: 150 }) : null;
+                      showJob(job);
                     }}
                     className="flex items-center space-x-2 px-5 py-2 text-sm transition-all bg-green-300 hover:bg-green-400 rounded shadow"
                   >

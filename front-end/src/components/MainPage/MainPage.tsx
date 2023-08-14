@@ -45,7 +45,9 @@ const MainPage = (): React.JSX.Element => {
   }, []);
 
   return (
-    <div className={`flex flex-col w-screen min-h-screen bg-green-100`}>
+    <div
+      className={`flex flex-col w-screen min-h-screen font-raleway bg-green-100`}
+    >
       <Navbar />
       <div className={`flex flex-grow w-11/12 mx-auto transition duration-500`}>
         {currentJob.name && screenWidth <= 1024 ? null : <Jobs />}
